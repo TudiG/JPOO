@@ -3,9 +3,10 @@ package org.poo.main;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.poo.associated.bank.BankInitializer;
 import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
-import org.poo.fileio.ObjectInput;
+import org.poo.fileio.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,6 +93,17 @@ public final class Main {
          * output.add(objectNode);
          *
          */
+
+        BankInitializer bankInitializer = new BankInitializer();
+
+        bankInitializer.initialize(inputData, output);
+
+
+//        CommerciantInput[] commerciantInputs = inputData.getCommerciants();
+//
+//        ExchangeInput[] exchangeInputs = inputData.getExchangeRates();
+
+
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(filePath2), output);
