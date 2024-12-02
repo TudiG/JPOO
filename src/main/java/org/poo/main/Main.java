@@ -2,8 +2,10 @@ package org.poo.main;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bank.BankInitializer;
+import org.poo.associated.customPrettyPrinter.CustomPrettyPrinter;
 import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
 import org.poo.fileio.*;
@@ -98,14 +100,12 @@ public final class Main {
 
         bankInitializer.initialize(inputData, output);
 
-
 //        CommerciantInput[] commerciantInputs = inputData.getCommerciants();
 //
 //        ExchangeInput[] exchangeInputs = inputData.getExchangeRates();
 
-
-
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
+        ObjectWriter objectWriter2 = objectMapper.writer(new CustomPrettyPrinter());
         objectWriter.writeValue(new File(filePath2), output);
     }
 

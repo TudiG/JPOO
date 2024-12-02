@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter @AllArgsConstructor
 public class Card {
-    private String number;
+    private String cardNumber;
     private String status;
 }

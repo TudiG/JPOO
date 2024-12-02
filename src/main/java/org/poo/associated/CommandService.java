@@ -19,11 +19,11 @@ public class CommandService {
         bankingCommands.put("addAccount", new AddAccount());
     }
 
-    public void executeCommands(CommandInput commandInput, Bank bank, ArrayNode output) {
+    public void executeCommands(final CommandInput commandInput, final Bank bank, final ArrayNode output) {
         BankingCommand bankingCommand = bankingCommands.get(commandInput.getCommand());
 
         if(bankingCommand != null) {
-            bankingCommand.execute(output);
+            bankingCommand.execute(commandInput, output);
         }
     }
 }

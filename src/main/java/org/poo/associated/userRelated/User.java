@@ -18,7 +18,7 @@ public class User {
 
     public User(UserInput userInput) {
         this.firstName = userInput.getFirstName();
-        this.lastName = userInput.getFirstName();
+        this.lastName = userInput.getLastName();
         this.email = userInput.getEmail();
         this.accounts = new ArrayList<>();
     }

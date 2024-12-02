@@ -18,7 +18,8 @@ public class BankInitializer {
 
         List<User> users = UserConverter.convertUserFromInput(userInputs);
 
-        Bank bank = new Bank(users);
+        Bank bank = Bank.getInstance();
+        bank.addAllUsers(users);
 
         CommandService commandService = new CommandService();
 
