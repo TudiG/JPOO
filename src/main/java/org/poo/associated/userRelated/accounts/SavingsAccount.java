@@ -1,8 +1,8 @@
-package org.poo.associated.userRelated;
+package org.poo.associated.userRelated.accounts;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.Utils;
 

@@ -1,4 +1,4 @@
-package org.poo.associated.bank;
+package org.poo.associated.bankRelated;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

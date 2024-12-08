@@ -1,4 +1,4 @@
-package org.poo.associated.bankingCommands;
+package org.poo.associated.bankingCommands.commandInterface;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.fileio.CommandInput;

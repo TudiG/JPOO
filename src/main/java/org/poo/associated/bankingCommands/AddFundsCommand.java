@@ -1,10 +1,11 @@
 package org.poo.associated.bankingCommands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.associated.bank.Bank;
+import org.poo.associated.bankRelated.Bank;
+import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.fileio.CommandInput;
 
-public class AddFunds implements BankingCommand {
+public class AddFundsCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput,  final ArrayNode output) {
         Bank.getInstance().getUsers().stream()
@@ -12,6 +13,6 @@ public class AddFunds implements BankingCommand {
                 .filter(account -> commandInput.getAccount().equals(account.getIBAN()))
                 .findFirst().stream()
                 .findAny()
-                .ifPresent(selectedAccount -> selectedAccount.addFund(commandInput.getAmount()));
+                .ifPresent(selectedAccount -> selectedAccount.addFunds(commandInput.getAmount()));
     }
 }

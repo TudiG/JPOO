@@ -1,5 +1,6 @@
-package org.poo.associated.userRelated;
+package org.poo.associated.userRelated.accounts;
 
+import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.Utils;
 

@@ -1,12 +1,16 @@
-package org.poo.associated.userRelated;
+package org.poo.associated.userRelated.accounts.accountUtilities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import lombok.Setter;
+import org.poo.associated.userRelated.Card;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
+@JsonPropertyOrder({ "IBAN", "balance", "currency", "accountType", "cards" })
 public abstract class Account {
     @JsonProperty("IBAN")
     protected String IBAN;
@@ -21,7 +25,13 @@ public abstract class Account {
         this.type = accountType;
     }
 
-    public void addFund(double amount) {
+    public void addFunds(double amount) {
         this.balance += amount;
+    }
+
+    public void subtractFunds(double amount) {
+        if(amount <= this.balance) {
+            this.balance -= amount;
+        }
     }
 }

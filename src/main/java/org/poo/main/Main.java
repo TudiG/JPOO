@@ -2,13 +2,13 @@ package org.poo.main;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.associated.bank.BankInitializer;
-import org.poo.associated.customPrettyPrinter.CustomPrettyPrinter;
+import org.poo.associated.bankRelated.BankInitializer;
 import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
-import org.poo.fileio.*;
+import org.poo.fileio.ObjectInput;
+import org.poo.utils.CustomPrettyPrinter;
+import org.poo.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,13 +96,11 @@ public final class Main {
          *
          */
 
+        Utils.resetRandom();
+
         BankInitializer bankInitializer = new BankInitializer();
 
         bankInitializer.initialize(inputData, output);
-
-//        CommerciantInput[] commerciantInputs = inputData.getCommerciants();
-//
-//        ExchangeInput[] exchangeInputs = inputData.getExchangeRates();
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         ObjectWriter objectWriter2 = objectMapper.writer(new CustomPrettyPrinter());
@@ -116,9 +114,8 @@ public final class Main {
      * @return the extracted numbers
      */
     public static int fileConsumer(final File file) {
-        return Integer.parseInt(
-                file.getName()
-                        .replaceAll(CheckerConstants.DIGIT_REGEX, CheckerConstants.EMPTY_STR)
-        );
+        String fileName = file.getName()
+                .replaceAll(CheckerConstants.DIGIT_REGEX, CheckerConstants.EMPTY_STR);
+        return Integer.parseInt(fileName.substring(0, 2));
     }
 }

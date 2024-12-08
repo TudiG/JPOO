@@ -1,4 +1,4 @@
-package org.poo.associated.customPrettyPrinter;
+package org.poo.utils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
