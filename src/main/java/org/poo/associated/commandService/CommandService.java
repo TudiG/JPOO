@@ -9,7 +9,6 @@ import org.poo.fileio.CommandInput;
 
 import java.util.HashMap;
 
-@AllArgsConstructor
 public class CommandService {
     private HashMap<String, BankingCommand> bankingCommands = new HashMap<>();
     private static CommandService serviceInstance;
@@ -24,6 +23,8 @@ public class CommandService {
         bankingCommands.put("deleteCard", new DeleteCardCommand());
         bankingCommands.put("payOnline", new PayOnlineCommand());
         bankingCommands.put("sendMoney", new SendMoneyCommand());
+        bankingCommands.put("printTransactions", new PrintTransactionsCommand());
+        bankingCommands.put("setAlias", new SetAliasCommand());
     }
 
     public static synchronized CommandService getInstance() {

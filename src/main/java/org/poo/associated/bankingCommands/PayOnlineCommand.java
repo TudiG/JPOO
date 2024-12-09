@@ -14,8 +14,8 @@ public class PayOnlineCommand implements BankingCommand {
     Bank bank = Bank.getInstance();
 
     @Override
-    public void execute(CommandInput commandInput, ArrayNode output) {
-        Account account = findAccountByCardNumber(commandInput.getCardNumber());
+    public void execute(final CommandInput commandInput, final ArrayNode output) {
+        Account account = Bank.getInstance().findAccountByCardNumber(commandInput.getCardNumber());
 
         if (account != null) {
             String rateKey = commandInput.getCurrency() + "-" + account.getCurrency();
@@ -35,14 +35,5 @@ public class PayOnlineCommand implements BankingCommand {
 
             output.add(fieldNode);
         }
-    }
-
-    private Account findAccountByCardNumber(String cardNumber) {
-        return bank.getUsers().stream()
-            .flatMap(user -> user.getAccounts().stream())
-            .filter(account -> account.getCards().stream()
-                .anyMatch(card -> card.getCardNumber().equals(cardNumber)))
-            .findFirst()
-            .orElse(null);
     }
 }
