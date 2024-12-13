@@ -26,7 +26,14 @@ public class SendMoneyCommand implements BankingCommand {
             Account sender = bank.findAccountByIBAN(commandInput.getAccount());
             Account receiver = bank.findAccountByIBAN(commandInput.getReceiver());
 
-            if (checkConditions(commandInput, receiver, sender)) {
+            if(sender == null || receiver == null) {
+                return;
+            }
+
+            if(sender.getBalance() < commandInput.getAmount()) {
+                fieldNode.put("description", "Insufficient funds");
+                fieldNode.put("timestamp", commandInput.getTimestamp());
+                transactionArray.add(fieldNode);
                 return;
             }
 
@@ -46,17 +53,5 @@ public class SendMoneyCommand implements BankingCommand {
 
             transactionArray.add(fieldNode);
         }
-    }
-
-    private static boolean checkConditions(CommandInput commandInput, Account receiver, Account sender) {
-        if(sender == null || receiver == null) {
-            return true;
-        }
-
-        if(sender.getBalance() < commandInput.getAmount())   {
-            return true;
-        }
-
-        return false;
     }
 }

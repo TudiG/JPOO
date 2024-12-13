@@ -37,7 +37,7 @@ public class BankInitializer {
         }
     }
 
-    public void clearAllData() {
+    private void clearAllData() {
         Utils.resetRandom();
 
         SimpleRateMapConverter.ratesMap.clear();
