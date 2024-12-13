@@ -1,4 +1,4 @@
-package org.poo.associated.userRelated;
+package org.poo.associated.userRelated.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

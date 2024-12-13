@@ -1,13 +1,13 @@
 package org.poo.associated.bankRelated;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
-import org.poo.associated.userRelated.User;
+import org.poo.associated.userRelated.card.Card;
+import org.poo.associated.userRelated.user.User;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 
 @Getter
@@ -20,8 +20,6 @@ public class Bank {
     private Bank() {
         transactionDatabase = new HashMap<>();
         aliasDatabase = new HashMap<>();
-        // TODO
-        // users = new ArrayList<>();
     }
 
     public synchronized static Bank getInstance() {
@@ -42,6 +40,15 @@ public class Bank {
                 .findFirst().orElse(null);
     }
 
+    public User findUserByCardNumber(String cardNumber) {
+        return users.stream()
+                .filter(user -> user.getAccounts().stream()
+                        .flatMap(account -> account.getCards().stream())
+                        .anyMatch(card -> cardNumber.equals(card.getCardNumber())))
+                .findFirst()
+                .orElse(null);
+    }
+
     public Account findAccountByIBAN(String iban) {
         return users.stream()
                 .flatMap(user -> user.getAccounts().stream())
@@ -54,6 +61,15 @@ public class Bank {
                 .flatMap(user -> user.getAccounts().stream())
                 .filter(account -> account.getCards().stream()
                         .anyMatch(card -> cardNumber.equals(card.getCardNumber())))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Card findCardByNumber(String cardNumber) {
+        return users.stream()
+                .flatMap(user -> user.getAccounts().stream())
+                .flatMap(account -> account.getCards().stream())
+                .filter(card -> cardNumber.equals(card.getCardNumber()))
                 .findFirst()
                 .orElse(null);
     }

@@ -25,6 +25,8 @@ public class CommandService {
         bankingCommands.put("sendMoney", new SendMoneyCommand());
         bankingCommands.put("printTransactions", new PrintTransactionsCommand());
         bankingCommands.put("setAlias", new SetAliasCommand());
+        bankingCommands.put("checkCardStatus", new CheckCardStatusCommand());
+        bankingCommands.put("setMinimumBalance", new SetMinimumBalanceCommand());
     }
 
     public static synchronized CommandService getInstance() {

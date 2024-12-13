@@ -1,6 +1,6 @@
-package org.poo.utils;
+package org.poo.associated.userRelated.user.userUtilities;
 
-import org.poo.associated.userRelated.User;
+import org.poo.associated.userRelated.user.User;
 import org.poo.fileio.UserInput;
 import java.util.Arrays;
 import java.util.List;

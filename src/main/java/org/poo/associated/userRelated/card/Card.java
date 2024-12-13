@@ -1,10 +1,12 @@
-package org.poo.associated.userRelated;
+package org.poo.associated.userRelated.card;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter @AllArgsConstructor
+@Getter @Setter
+@AllArgsConstructor
 public class Card {
     private String cardNumber;
     private String status;

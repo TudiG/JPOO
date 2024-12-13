@@ -22,25 +22,12 @@ public class SendMoneyCommand implements BankingCommand {
         Account sender = null;
 
         if (Utils.isValidIBAN(commandInput.getReceiver()) && Utils.isValidIBAN(commandInput.getAccount())) {
+            sender = bank.findAccountByIBAN(commandInput.getAccount());
+            receiver = bank.findAccountByIBAN(commandInput.getReceiver());
 
-            // if(!Utils.isValidIBAN(commandInput.getAccount())) {
-            //     if(bank.getAliasDatabase().get(commandInput.getAccount()) != null) {
-            //         sender = bank.getAliasDatabase().get(commandInput.getAccount()).getAccount();
-            //     }
-            // } else {
-                sender = bank.findAccountByIBAN(commandInput.getAccount());
-            // }
-
-            // if(!Utils.isValidIBAN(commandInput.getReceiver())) {
-            //     if(bank.getAliasDatabase().get(commandInput.getReceiver()) != null) {
-            //         receiver = bank.getAliasDatabase().get(commandInput.getReceiver()).getAccount();
-            //     }
-            // } else {
-                receiver = bank.findAccountByIBAN(commandInput.getReceiver());
-            // }
-
-            if (checkConditions(commandInput, receiver, sender)) return;
-
+            if (checkConditions(commandInput, receiver, sender)) {
+                return;
+            }
 
             String rateKey = sender.getCurrency() + "-" + receiver.getCurrency();
             Double rate = SimpleRateMapConverter.ratesMap.get(rateKey);
@@ -48,9 +35,7 @@ public class SendMoneyCommand implements BankingCommand {
 
             sender.subtractFunds(commandInput.getAmount());
             receiver.addFunds(convertedAmount);
-        }
 
-        if (Utils.isValidIBAN(commandInput.getAccount()) && Utils.isValidIBAN(commandInput.getReceiver())) {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode fieldNode = mapper.createObjectNode();
 
@@ -66,18 +51,14 @@ public class SendMoneyCommand implements BankingCommand {
     }
 
     private static boolean checkConditions(CommandInput commandInput, Account receiver, Account sender) {
-        // TODO
-        // if(receiver == sender) {
-        //     return true;
-        // }
-
         if(sender == null || receiver == null) {
             return true;
         }
 
-        if(sender.getBalance() < commandInput.getAmount()) {
+        if(sender.getBalance() < commandInput.getAmount())   {
             return true;
         }
+
         return false;
     }
 }

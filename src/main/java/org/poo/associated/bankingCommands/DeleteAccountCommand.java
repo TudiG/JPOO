@@ -14,8 +14,6 @@ public class DeleteAccountCommand implements BankingCommand {
                 .filter(user -> commandInput.getEmail().equals(user.getEmail()))
                 .findFirst()
                 .ifPresentOrElse(user -> {
-                    // TODO 
-                    // removed se va folosi in caz ca nu exista contul, dat exista user-ul
                     boolean removed = user.getAccounts().removeIf(account -> 
                         commandInput.getAccount().equals(account.getIBAN()) && account.getBalance() == 0
                     );
@@ -25,11 +23,10 @@ public class DeleteAccountCommand implements BankingCommand {
                     ObjectNode fieldNode = mapper.createObjectNode();
                     fieldNode.put("command", commandInput.getCommand());
 
-                    ObjectNode outputNode = mapper.createObjectNode();
-
                     String operationResult =  removed ? "success" : "error";
                     String operationMessage = removed ? "Account deleted" : "Account couldn't be deleted - see org.poo.transactions for details";
 
+                    ObjectNode outputNode = mapper.createObjectNode();
                     outputNode.put(operationResult, operationMessage);
                     outputNode.put("timestamp", commandInput.getTimestamp());
 
