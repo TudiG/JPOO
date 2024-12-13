@@ -7,7 +7,7 @@ import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.fileio.CommandInput;
 
-public class PrintTransactionsCommand implements BankingCommand {
+public final class PrintTransactionsCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();

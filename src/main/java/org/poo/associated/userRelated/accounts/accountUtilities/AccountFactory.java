@@ -4,11 +4,11 @@ import org.poo.associated.userRelated.accounts.ClassicAccount;
 import org.poo.associated.userRelated.accounts.SavingsAccount;
 import org.poo.fileio.CommandInput;
 
-public class AccountFactory {
-    public static Account createAccount(CommandInput commandInput) {
+public final class AccountFactory {
+    public static Account createAccount(final CommandInput commandInput, final String belongsToEmail) {
         return switch(commandInput.getAccountType()) {
-            case "classic" -> new ClassicAccount(commandInput);
-            case "savings" -> new SavingsAccount(commandInput);
+            case "classic" -> new ClassicAccount(commandInput, belongsToEmail);
+            case "savings" -> new SavingsAccount(commandInput, belongsToEmail);
             default -> throw new IllegalArgumentException("Invalid account type");
         };
     }

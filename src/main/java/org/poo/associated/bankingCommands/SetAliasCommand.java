@@ -7,7 +7,7 @@ import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.fileio.CommandInput;
 
-public class SetAliasCommand implements BankingCommand {
+public final class SetAliasCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         Bank bank = Bank.getInstance();

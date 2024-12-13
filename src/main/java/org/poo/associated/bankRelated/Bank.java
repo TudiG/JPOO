@@ -3,7 +3,6 @@ package org.poo.associated.bankRelated;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
 import org.poo.associated.userRelated.card.Card;
@@ -11,7 +10,7 @@ import org.poo.associated.userRelated.user.User;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 
 @Getter
-public class Bank {
+public final class Bank {
     private List<User> users;
     private static Bank bankInstance;
     private Map<String, ArrayNode> transactionDatabase;

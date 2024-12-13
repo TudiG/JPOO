@@ -9,10 +9,10 @@ import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.accounts.accountUtilities.AccountFactory;
 import org.poo.fileio.CommandInput;
 
-public class AddAccountCommand implements BankingCommand {
+public final class AddAccountCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
-        Account account = AccountFactory.createAccount(commandInput);
+        Account account = AccountFactory.createAccount(commandInput, commandInput.getEmail());
 
         Bank.getInstance().getUsers().stream()
                 .filter(user -> commandInput.getEmail().equals(user.getEmail()))

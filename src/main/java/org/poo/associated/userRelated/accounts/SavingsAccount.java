@@ -10,12 +10,12 @@ import org.poo.fileio.CommandInput;
 import org.poo.utils.Utils;
 
 @Getter @Setter
-public class SavingsAccount extends Account {
+public final class SavingsAccount extends Account {
     @JsonIgnore
     private double interestRate;
 
-    public SavingsAccount(final CommandInput commandInput) {
-        super(Utils.generateIBAN(), commandInput.getCurrency(), commandInput.getAccountType());
+    public SavingsAccount(final CommandInput commandInput, final String belongsToEmail) {
+        super(Utils.generateIBAN(), commandInput.getCurrency(), commandInput.getAccountType(), belongsToEmail);
         this.interestRate = commandInput.getInterestRate();
     }
 }

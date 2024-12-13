@@ -10,7 +10,7 @@ import org.poo.utils.Utils;
 
 import java.util.Arrays;
 
-public class BankInitializer {
+public final class BankInitializer {
     private static BankInitializer instance;
 
     private BankInitializer() {
@@ -33,7 +33,7 @@ public class BankInitializer {
         SimpleRateMapConverter.precomputeRates(Arrays.asList(inputData.getExchangeRates()));
 
         for (CommandInput commandInput : inputData.getCommands()) {
-            CommandService.getInstance().executeCommands(commandInput, Bank.getInstance(), output);
+            CommandService.getInstance().executeCommands(commandInput, output);
         }
     }
 

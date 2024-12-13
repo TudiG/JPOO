@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-public class Card {
+public final class Card {
     private String cardNumber;
     private String status;
     @JsonIgnore

@@ -10,10 +10,9 @@ import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
 import org.poo.utils.Utils;
 
-
 // !TODO STRATEGY DOABLE
 
-public class SendMoneyCommand implements BankingCommand {
+public final class SendMoneyCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();

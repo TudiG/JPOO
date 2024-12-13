@@ -6,7 +6,7 @@ import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.fileio.CommandInput;
 
-public class SetMinimumBalanceCommand implements BankingCommand {
+public final class SetMinimumBalanceCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         Account account = Bank.getInstance().findAccountByIBAN(commandInput.getAccount());

@@ -21,18 +21,21 @@ public abstract class Account {
     protected List<Card> cards = new ArrayList<>();
     @JsonIgnore
     protected double minimumBalance = 0;
+    @JsonIgnore
+    protected String belongsToEmail;
 
-    public Account(String IBAN, String currency, String accountType) {
+    public Account(final String IBAN, final String currency, final String accountType, final String belongsToEmail) {
         this.IBAN = IBAN;
         this.currency = currency;
         this.type = accountType;
+        this.belongsToEmail = belongsToEmail;
     }
 
-    public void addFunds(double amount) {
+    public void addFunds(final double amount) {
         this.balance += amount;
     }
 
-    public void subtractFunds(double amount) {
+    public void subtractFunds(final double amount) {
         if(amount <= this.balance) {
             this.balance -= amount;
         }

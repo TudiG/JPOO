@@ -7,7 +7,7 @@ import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.fileio.CommandInput;
 
-public class DeleteAccountCommand implements BankingCommand {
+public final class DeleteAccountCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         Bank.getInstance().getUsers().stream()

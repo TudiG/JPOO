@@ -7,7 +7,7 @@ import org.poo.associated.userRelated.accounts.SavingsAccount;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.fileio.CommandInput;
 
-public class ChangeInterestRateCommand implements BankingCommand {
+public final class ChangeInterestRateCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         Account account = Bank.getInstance().findAccountByIBAN(commandInput.getAccount());

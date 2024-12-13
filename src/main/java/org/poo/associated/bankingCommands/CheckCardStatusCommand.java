@@ -10,7 +10,7 @@ import org.poo.associated.userRelated.card.Card;
 import org.poo.associated.userRelated.user.User;
 import org.poo.fileio.CommandInput;
 
-public class CheckCardStatusCommand implements BankingCommand {
+public final class CheckCardStatusCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();

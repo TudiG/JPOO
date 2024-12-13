@@ -9,7 +9,7 @@ import org.poo.associated.userRelated.card.Card;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.Utils;
 
-public class CreateOneTimeCard implements BankingCommand {
+public final class CreateOneTimeCard implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         String cardNumber = Utils.generateCardNumber();

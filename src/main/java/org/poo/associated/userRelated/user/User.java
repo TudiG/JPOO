@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @AllArgsConstructor @NoArgsConstructor
-public class User {
+public final class User {
     private String firstName;
     private String lastName;
     private String email;

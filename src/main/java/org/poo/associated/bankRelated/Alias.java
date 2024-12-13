@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 
 @AllArgsConstructor
-public class Alias {
+public final class Alias {
     private String email;
     private Account account;
     private String alias;

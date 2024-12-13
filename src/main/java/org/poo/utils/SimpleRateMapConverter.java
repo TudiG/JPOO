@@ -1,7 +1,10 @@
 package org.poo.utils;
 
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.poo.fileio.ExchangeInput;
 
 public final class SimpleRateMapConverter {
@@ -19,7 +22,6 @@ public final class SimpleRateMapConverter {
             currencies.add(input.getFrom());
             currencies.add(input.getTo());
         }
-
 
         for (String from : currencies) {
             for (String to : currencies) {
