@@ -52,6 +52,7 @@ public final class Main {
                 sorted(Comparator.comparingInt(Main::fileConsumer))
                 .toList();
 
+                // File file = sortedFiles.get(8);
         for (File file : sortedFiles) {
             String filepath = CheckerConstants.OUT_PATH + file.getName();
             File out = new File(filepath);
@@ -73,6 +74,7 @@ public final class Main {
                               final String filePath2) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         File file = new File(CheckerConstants.TESTS_PATH + filePath1);
+        System.out.println("============ " + filePath1);
         ObjectInput inputData = objectMapper.readValue(file, ObjectInput.class);
 
         ArrayNode output = objectMapper.createArrayNode();
@@ -100,10 +102,11 @@ public final class Main {
 
         BankInitializer bankInitializer = new BankInitializer();
 
+        bankInitializer.clearAllData();
+
         bankInitializer.initialize(inputData, output);
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
-        ObjectWriter objectWriter2 = objectMapper.writer(new CustomPrettyPrinter());
         objectWriter.writeValue(new File(filePath2), output);
     }
 

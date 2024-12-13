@@ -11,19 +11,35 @@ import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
 
 public class PayOnlineCommand implements BankingCommand {
-    Bank bank = Bank.getInstance();
-
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode fieldNode = mapper.createObjectNode();
+
+        ArrayNode transactionArray = Bank.getInstance().getTransactionDatabase().get(commandInput.getEmail());
+
         Account account = Bank.getInstance().findAccountByCardNumber(commandInput.getCardNumber());
 
         if (account != null) {
             String rateKey = commandInput.getCurrency() + "-" + account.getCurrency();
             double rate = SimpleRateMapConverter.ratesMap.get(rateKey);
-            account.subtractFunds(rate * commandInput.getAmount());
+            double convertedAmount = rate * commandInput.getAmount();
+
+            if(account.getBalance() < convertedAmount) {
+                fieldNode.put("description", "Insufficient funds");
+                fieldNode.put("timestamp", commandInput.getTimestamp());
+                transactionArray.add(fieldNode);
+                return;
+            }
+
+            account.subtractFunds(convertedAmount);
+
+            fieldNode.put("amount", convertedAmount);
+            fieldNode.put("commerciant", commandInput.getCommerciant());
+            fieldNode.put("description", "Card payment");
+            fieldNode.put("timestamp", commandInput.getTimestamp());
+            transactionArray.add(fieldNode);
         } else {
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectNode fieldNode = mapper.createObjectNode();
             fieldNode.put("command", commandInput.getCommand());
 
             ObjectNode outputNode = mapper.createObjectNode();

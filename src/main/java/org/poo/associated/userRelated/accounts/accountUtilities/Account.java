@@ -14,7 +14,7 @@ import java.util.List;
 public abstract class Account {
     @JsonProperty("IBAN")
     protected String IBAN;
-    protected double balance;
+    protected double balance = 0;
     protected String currency;
     protected String type;
     protected List<Card> cards = new ArrayList<>();

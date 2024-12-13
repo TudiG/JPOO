@@ -58,4 +58,9 @@ public final class Utils {
         ibanRandom = new Random(IBAN_SEED);
         cardRandom = new Random(CARD_SEED);
     }
+
+    public static boolean isValidIBAN(String iban) {
+        String ibanRegex = "^RO\\d{2}POOB\\d{16}$";
+        return iban.matches(ibanRegex);
+    }
 }

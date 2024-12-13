@@ -21,4 +21,13 @@ public class BankInitializer {
             CommandService.getInstance().executeCommands(commandInput, Bank.getInstance(), output);
         }
     }
+
+    public void clearAllData() {
+        Bank bank = Bank.getInstance();
+        SimpleRateMapConverter.ratesMap.clear();
+        // TODO 
+        // bank.getUsers().clear();
+        bank.getTransactionDatabase().clear();
+        bank.getAliasDatabase().clear();
+    }
 }

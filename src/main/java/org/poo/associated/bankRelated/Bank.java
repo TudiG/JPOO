@@ -1,8 +1,11 @@
 package org.poo.associated.bankRelated;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
 import org.poo.associated.userRelated.User;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
@@ -10,11 +13,15 @@ import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 @Getter
 public class Bank {
     private List<User> users;
-    // private List<Transaction> transactions;
     private static Bank bankInstance;
+    private Map<String, ArrayNode> transactionDatabase;
+    private Map<String, Alias> aliasDatabase;
 
     private Bank() {
-        // this.transactions = new ArrayList<>();
+        transactionDatabase = new HashMap<>();
+        aliasDatabase = new HashMap<>();
+        // TODO
+        // users = new ArrayList<>();
     }
 
     public synchronized static Bank getInstance() {
@@ -27,6 +34,12 @@ public class Bank {
 
     public void addAllUsers(final List<User> users) {
         this.users = users;
+    }
+
+    public User findUserByEmail(String email) {
+        return users.stream()
+                .filter(user -> email.equals(user.getEmail()))
+                .findFirst().orElse(null);
     }
 
     public Account findAccountByIBAN(String iban) {

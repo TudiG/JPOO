@@ -14,8 +14,11 @@ public class DeleteAccountCommand implements BankingCommand {
                 .filter(user -> commandInput.getEmail().equals(user.getEmail()))
                 .findFirst()
                 .ifPresentOrElse(user -> {
+                    // TODO 
                     // removed se va folosi in caz ca nu exista contul, dat exista user-ul
-                    boolean removed = user.getAccounts().removeIf(account -> commandInput.getAccount().equals(account.getIBAN()));
+                    boolean removed = user.getAccounts().removeIf(account -> 
+                        commandInput.getAccount().equals(account.getIBAN()) && account.getBalance() == 0
+                    );
 
                     ObjectMapper mapper = new ObjectMapper();
 

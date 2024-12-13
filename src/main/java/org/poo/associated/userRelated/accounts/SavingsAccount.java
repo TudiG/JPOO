@@ -1,5 +1,8 @@
 package org.poo.associated.userRelated.accounts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
@@ -8,6 +11,7 @@ import org.poo.utils.Utils;
 
 @Getter @Setter
 public class SavingsAccount extends Account {
+    @JsonIgnore
     private double interestRate;
 
     public SavingsAccount(final CommandInput commandInput) {
