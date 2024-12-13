@@ -98,13 +98,7 @@ public final class Main {
          *
          */
 
-        Utils.resetRandom();
-
-        BankInitializer bankInitializer = new BankInitializer();
-
-        bankInitializer.clearAllData();
-
-        bankInitializer.initialize(inputData, output);
+        BankInitializer.getInstance().initialize(inputData, output);
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(filePath2), output);

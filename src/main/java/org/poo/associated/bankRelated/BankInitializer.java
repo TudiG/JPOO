@@ -6,25 +6,43 @@ import org.poo.utils.SimpleRateMapConverter;
 import org.poo.associated.userRelated.user.userUtilities.UserConverter;
 import org.poo.fileio.CommandInput;
 import org.poo.fileio.ObjectInput;
+import org.poo.utils.Utils;
 
 import java.util.Arrays;
 
 public class BankInitializer {
+    private static BankInitializer instance;
+
+    private BankInitializer() {
+
+    }
+
+    public synchronized static BankInitializer getInstance() {
+        if (instance == null) {
+            instance = new BankInitializer();
+        }
+
+        return instance;
+    }
+
     public void initialize(final ObjectInput inputData, final ArrayNode output) {
-        CommandInput[] commandInputs = inputData.getCommands();
+        clearAllData();
 
         Bank.getInstance().addAllUsers(UserConverter.convertUsersFromInput(inputData.getUsers()));
 
         SimpleRateMapConverter.precomputeRates(Arrays.asList(inputData.getExchangeRates()));
 
-        for (CommandInput commandInput : commandInputs) {
+        for (CommandInput commandInput : inputData.getCommands()) {
             CommandService.getInstance().executeCommands(commandInput, Bank.getInstance(), output);
         }
     }
 
     public void clearAllData() {
-        Bank bank = Bank.getInstance();
+        Utils.resetRandom();
+
         SimpleRateMapConverter.ratesMap.clear();
+
+        Bank bank = Bank.getInstance();
         bank.getTransactionDatabase().clear();
         bank.getAliasDatabase().clear();
     }
