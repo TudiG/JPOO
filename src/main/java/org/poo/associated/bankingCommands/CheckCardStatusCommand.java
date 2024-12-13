@@ -17,6 +17,7 @@ public class CheckCardStatusCommand implements BankingCommand {
         ObjectNode fieldNode = mapper.createObjectNode();
         ObjectNode outputNode = mapper.createObjectNode();
 
+        Bank bank = Bank.getInstance();
         Card card = Bank.getInstance().findCardByNumber(commandInput.getCardNumber());
 
         if (card == null) {
@@ -32,17 +33,15 @@ public class CheckCardStatusCommand implements BankingCommand {
             return;
         }
 
-        Account account = Bank.getInstance().findAccountByCardNumber(card.getCardNumber());
+        Account account = bank.findAccountByCardNumber(card.getCardNumber());
+        User user = bank.findUserByCardNumber(commandInput.getCardNumber());
+        ArrayNode transactionArray = bank.getTransactionDatabase().get(user.getEmail());
 
         if (account.getMinimumBalance() >= account.getBalance()) {
-            User user = Bank.getInstance().findUserByCardNumber(commandInput.getCardNumber());
-
-            ArrayNode transactionArray = Bank.getInstance().getTransactionDatabase().get(user.getEmail());
+            card.setStatus("frozen");
 
             fieldNode.put("description", "You have reached the minimum amount of funds, the card will be frozen");
             fieldNode.put("timestamp", commandInput.getTimestamp());
-
-            card.setStatus("frozen");
 
             transactionArray.add(fieldNode);
         }

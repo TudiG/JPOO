@@ -9,17 +9,17 @@ import org.poo.fileio.CommandInput;
 
 public class PrintTransactionsCommand implements BankingCommand {
     @Override
-    public void execute(CommandInput commandInput, ArrayNode output) {
+    public void execute(final CommandInput commandInput, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode fieldNode = mapper.createObjectNode();
 
-        ArrayNode transactions = Bank.getInstance().getTransactionDatabase().get(commandInput.getEmail());
-        if (transactions == null) {
-            transactions = mapper.createArrayNode();
+        ArrayNode transactionArray = Bank.getInstance().getTransactionDatabase().get(commandInput.getEmail());
+        if (transactionArray == null) {
+            transactionArray = mapper.createArrayNode();
         }
 
         ArrayNode filteredTransactions = mapper.createArrayNode();
-        transactions.forEach(transaction -> {
+        transactionArray.forEach(transaction -> {
             if (transaction.has("timestamp") && transaction.get("timestamp").asInt() <= commandInput.getTimestamp()) {
                 filteredTransactions.add(transaction);
             }

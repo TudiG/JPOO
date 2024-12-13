@@ -11,7 +11,6 @@ public class SetAliasCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         Bank bank = Bank.getInstance();
-
         Account account = bank.findAccountByIBAN(commandInput.getAccount());
 
         if (account == null) {

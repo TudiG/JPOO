@@ -16,14 +16,15 @@ import org.poo.utils.Utils;
 public class SendMoneyCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
-        Bank bank = Bank.getInstance();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode fieldNode = mapper.createObjectNode();
 
-        Account receiver = null;
-        Account sender = null;
+        Bank bank = Bank.getInstance();
+        ArrayNode transactionArray = bank.getTransactionDatabase().get(commandInput.getEmail());
 
         if (Utils.isValidIBAN(commandInput.getReceiver()) && Utils.isValidIBAN(commandInput.getAccount())) {
-            sender = bank.findAccountByIBAN(commandInput.getAccount());
-            receiver = bank.findAccountByIBAN(commandInput.getReceiver());
+            Account sender = bank.findAccountByIBAN(commandInput.getAccount());
+            Account receiver = bank.findAccountByIBAN(commandInput.getReceiver());
 
             if (checkConditions(commandInput, receiver, sender)) {
                 return;
@@ -36,9 +37,6 @@ public class SendMoneyCommand implements BankingCommand {
             sender.subtractFunds(commandInput.getAmount());
             receiver.addFunds(convertedAmount);
 
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectNode fieldNode = mapper.createObjectNode();
-
             fieldNode.put("timestamp", commandInput.getTimestamp());
             fieldNode.put("description", commandInput.getDescription());
             fieldNode.put("senderIBAN", sender.getIBAN());
@@ -46,7 +44,7 @@ public class SendMoneyCommand implements BankingCommand {
             fieldNode.put("amount", commandInput.getAmount() + " " + sender.getCurrency());
             fieldNode.put("transferType", "sent");
 
-            Bank.getInstance().getTransactionDatabase().get(commandInput.getEmail()).add(fieldNode);
+            transactionArray.add(fieldNode);
         }
     }
 

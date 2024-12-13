@@ -11,7 +11,12 @@ import org.poo.fileio.CommandInput;
 public class DeleteCardCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
-        Account accountToRemoveFrom = Bank.getInstance().findAccountByCardNumber(commandInput.getCardNumber());
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode fieldNode = mapper.createObjectNode();
+
+        Bank bank = Bank.getInstance();
+        ArrayNode transactionArray = bank.getTransactionDatabase().get(commandInput.getEmail());
+        Account accountToRemoveFrom = bank.findAccountByCardNumber(commandInput.getCardNumber());
 
         Bank.getInstance().getUsers().stream()
                 .filter(user -> commandInput.getEmail().equalsIgnoreCase(user.getEmail()))
@@ -22,8 +27,6 @@ public class DeleteCardCommand implements BankingCommand {
                         )
                 );
 
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode fieldNode = mapper.createObjectNode();
         if(accountToRemoveFrom != null) {
             fieldNode.put("account", accountToRemoveFrom.getIBAN());
             fieldNode.put("cardHolder", commandInput.getEmail());
@@ -31,7 +34,7 @@ public class DeleteCardCommand implements BankingCommand {
             fieldNode.put("description", "The card has been destroyed");
             fieldNode.put("timestamp", commandInput.getTimestamp());
 
-            Bank.getInstance().getTransactionDatabase().get(commandInput.getEmail()).add(fieldNode);
+            transactionArray.add(fieldNode);
         }
     }
 }
