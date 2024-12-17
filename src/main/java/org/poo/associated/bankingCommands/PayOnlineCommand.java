@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
+import org.poo.associated.userRelated.card.Card;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
+import org.poo.utils.Utils;
 
 public final class PayOnlineCommand implements BankingCommand {
     @Override
@@ -46,6 +48,19 @@ public final class PayOnlineCommand implements BankingCommand {
             fieldNode.put("description", "Card payment");
             fieldNode.put("timestamp", commandInput.getTimestamp());
             transactionArray.add(fieldNode);
+
+            // IMPLEMENTARE TEMP
+            account.getTransactions().add(fieldNode);
+
+            ObjectNode commerciantNode = mapper.createObjectNode();
+            commerciantNode.put("commerciant", commandInput.getCommerciant());
+            commerciantNode.put("total", convertedAmount);
+            account.getCommerciants().add(commerciantNode);
+
+            Card card = bank.findCardByNumber(commandInput.getCardNumber());
+            if(card.isOneTimeCard()) {
+                card.setCardNumber(Utils.generateCardNumber());
+            }
         } else {
             fieldNode.put("command", commandInput.getCommand());
 

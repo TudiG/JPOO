@@ -51,6 +51,9 @@ public final class SendMoneyCommand implements BankingCommand {
             fieldNode.put("transferType", "sent");
 
             transactionArray.add(fieldNode);
+
+            // IMPLEMENTARE TEMP
+            sender.getTransactions().add(fieldNode);
         }
     }
 }

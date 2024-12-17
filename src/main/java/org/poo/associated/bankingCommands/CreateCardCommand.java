@@ -34,5 +34,11 @@ public final class CreateCardCommand implements BankingCommand {
         if(transactionArray != null) {
             transactionArray.add(fieldNode);
         }
+
+        //TEMP IMPLEM
+        if(Bank.getInstance().findAccountByIBAN(commandInput.getAccount()) == null) {
+            return;
+        }
+        Bank.getInstance().findAccountByIBAN(commandInput.getAccount()).getTransactions().add(fieldNode);
     }
 }

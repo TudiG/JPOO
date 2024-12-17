@@ -13,9 +13,11 @@ import org.poo.associated.bankingCommands.DeleteCardCommand;
 import org.poo.associated.bankingCommands.PayOnlineCommand;
 import org.poo.associated.bankingCommands.PrintTransactionsCommand;
 import org.poo.associated.bankingCommands.PrintUsersCommand;
+import org.poo.associated.bankingCommands.ReportCommand;
 import org.poo.associated.bankingCommands.SendMoneyCommand;
 import org.poo.associated.bankingCommands.SetAliasCommand;
 import org.poo.associated.bankingCommands.SetMinimumBalanceCommand;
+import org.poo.associated.bankingCommands.SpendingsReportCommand;
 import org.poo.associated.bankingCommands.SplitPaymentCommand;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.fileio.CommandInput;
@@ -42,6 +44,8 @@ public final class CommandService {
         bankingCommands.put("setMinimumBalance", new SetMinimumBalanceCommand());
         bankingCommands.put("changeInterestRate", new ChangeInterestRateCommand());
         bankingCommands.put("splitPayment", new SplitPaymentCommand());
+        bankingCommands.put("report", new ReportCommand());
+        bankingCommands.put("spendingsReport", new SpendingsReportCommand());
     }
 
     public static synchronized CommandService getInstance() {

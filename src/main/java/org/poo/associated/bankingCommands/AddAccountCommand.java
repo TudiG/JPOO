@@ -28,5 +28,8 @@ public final class AddAccountCommand implements BankingCommand {
         accountsNode.add(fieldNode);
 
         Bank.getInstance().getTransactionDatabase().put(commandInput.getEmail(), accountsNode);
+
+        // TEMP IMPLEM
+        account.getTransactions().add(fieldNode);
     }
 }

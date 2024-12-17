@@ -12,7 +12,7 @@ import org.poo.utils.SimpleRateMapConverter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SplitPaymentCommand implements BankingCommand {
+public final class SplitPaymentCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
