@@ -6,9 +6,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
+import org.poo.associated.userRelated.commerciantReport.CommerciantReport;
+import org.poo.associated.userRelated.transaction.Transaction;
 import org.poo.fileio.CommandInput;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
-public class SpendingsReportCommand implements BankingCommand {
+public final class SpendingsReportCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
@@ -20,25 +25,23 @@ public class SpendingsReportCommand implements BankingCommand {
             return;
         }
 
-        ArrayNode transactionArray = account.getTransactions();
-
-        ArrayNode filteredTransactions = mapper.createArrayNode();
-        transactionArray.forEach(transaction -> {
-            if (transaction.has("timestamp") && transaction.get("timestamp").asInt() >= commandInput.getStartTimestamp()
-                    && transaction.get("timestamp").asInt() <= commandInput.getEndTimestamp()) {
-                filteredTransactions.add(transaction);
+        List<Transaction> transactions = new ArrayList<>();
+        List<CommerciantReport> filteredCommerciants = new ArrayList<>();
+        account.getCommerciantInteractions().forEach(commerciant -> {
+            if (commerciant.getTimestamp() >= commandInput.getStartTimestamp() && commerciant.getTimestamp() <= commandInput.getEndTimestamp()) {
+                filteredCommerciants.add(commerciant);
+                transactions.add(commerciant.getTransaction());
             }
         });
 
-        ArrayNode commerciantsArray = account.getCommerciants();
-
+        filteredCommerciants.sort(Comparator.comparingDouble(CommerciantReport::getTotal).reversed());
 
         ObjectNode outputNode = mapper.createObjectNode();
         outputNode.put("balance", account.getBalance());
-        outputNode.put("commerciants", commerciantsArray);
+        outputNode.put("commerciants", mapper.valueToTree(filteredCommerciants));
         outputNode.put("currency", account.getCurrency());
         outputNode.put("IBAN", account.getIBAN());
-        outputNode.put("transactions", filteredTransactions);
+        outputNode.put("transactions", mapper.valueToTree(transactions));
 
         fieldNode.put("command", commandInput.getCommand());
         fieldNode.set("output", outputNode);

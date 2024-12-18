@@ -3,11 +3,11 @@ package org.poo.associated.userRelated.accounts.accountUtilities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
 import lombok.Setter;
 import org.poo.associated.userRelated.card.Card;
+import org.poo.associated.userRelated.commerciantReport.CommerciantReport;
+import org.poo.associated.userRelated.transaction.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +21,17 @@ public abstract class Account {
     protected String currency;
     protected String type;
     protected List<Card> cards = new ArrayList<>();
+
     @JsonIgnore
     protected double minimumBalance = 0;
     @JsonIgnore
     protected String belongsToEmail;
+
+    // Se vor folosi pentru spending report. aia e. se vor dubla listele de tranzactii.
     @JsonIgnore
-    protected ArrayNode transactions = new ObjectMapper().createArrayNode();
+    protected List<Transaction> accountTransactions = new ArrayList<>();
     @JsonIgnore
-    protected ArrayNode commerciants = new ObjectMapper().createArrayNode();
+    protected List<CommerciantReport> commerciantInteractions = new ArrayList<>();
 
     public Account(final String IBAN, final String currency, final String accountType, final String belongsToEmail) {
         this.IBAN = IBAN;
@@ -38,12 +41,12 @@ public abstract class Account {
     }
 
     public void addFunds(final double amount) {
-        this.balance += amount;
+        balance += amount;
     }
 
     public void subtractFunds(final double amount) {
         if(amount <= this.balance) {
-            this.balance -= amount;
+            balance -= amount;
         }
     }
 }

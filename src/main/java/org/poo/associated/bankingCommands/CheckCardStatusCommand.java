@@ -7,20 +7,25 @@ import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.card.Card;
+import org.poo.associated.userRelated.transaction.CardFrozenError;
+import org.poo.associated.userRelated.transaction.MinimumBalanceWarning;
+import org.poo.associated.userRelated.transaction.Transaction;
 import org.poo.associated.userRelated.user.User;
 import org.poo.fileio.CommandInput;
+
+import java.util.List;
 
 public final class CheckCardStatusCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode fieldNode = mapper.createObjectNode();
-        ObjectNode outputNode = mapper.createObjectNode();
-
         Bank bank = Bank.getInstance();
         Card card = Bank.getInstance().findCardByNumber(commandInput.getCardNumber());
 
         if (card == null) {
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode fieldNode = mapper.createObjectNode();
+            ObjectNode outputNode = mapper.createObjectNode();
+
             fieldNode.put("command", commandInput.getCommand());
 
             outputNode.put("description", "Card not found");
@@ -34,16 +39,18 @@ public final class CheckCardStatusCommand implements BankingCommand {
         }
 
         Account account = bank.findAccountByCardNumber(card.getCardNumber());
+
         User user = bank.findUserByCardNumber(commandInput.getCardNumber());
-        ArrayNode transactionArray = bank.getTransactionDatabase().get(user.getEmail());
+
+        List<Transaction> transactionArray = bank.getUserTransactionsDatabase().get(user.getEmail());
 
         if (account.getMinimumBalance() >= account.getBalance()) {
             card.setStatus("frozen");
 
-            fieldNode.put("description", "You have reached the minimum amount of funds, the card will be frozen");
-            fieldNode.put("timestamp", commandInput.getTimestamp());
+            Transaction transaction = new MinimumBalanceWarning(commandInput.getTimestamp());
 
-            transactionArray.add(fieldNode);
+            transactionArray.add(transaction);
+            account.getAccountTransactions().add(transaction);
         }
     }
 }

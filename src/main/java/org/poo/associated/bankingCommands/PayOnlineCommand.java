@@ -7,20 +7,25 @@ import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.card.Card;
+import org.poo.associated.userRelated.transaction.CardFrozenError;
+import org.poo.associated.userRelated.commerciantReport.CommerciantReport;
+import org.poo.associated.userRelated.transaction.InsufficientFundsError;
+import org.poo.associated.userRelated.transaction.PayOnlineTransaction;
+import org.poo.associated.userRelated.transaction.Transaction;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
 import org.poo.utils.Utils;
 
+import java.util.List;
+
 public final class PayOnlineCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode fieldNode = mapper.createObjectNode();
-        ObjectNode outputNode = mapper.createObjectNode();
-
         Bank bank = Bank.getInstance();
-        ArrayNode transactionArray = bank.getTransactionDatabase().get(commandInput.getEmail());
         Account account = bank.findAccountByCardNumber(commandInput.getCardNumber());
+
+        List<Transaction> transactionsArray = bank.getUserTransactionsDatabase().get(commandInput.getEmail());
+        Transaction transaction = null;
 
         if (account != null) {
             String rateKey = commandInput.getCurrency() + "-" + account.getCurrency();
@@ -28,40 +33,40 @@ public final class PayOnlineCommand implements BankingCommand {
             double convertedAmount = rate * commandInput.getAmount();
 
             if(bank.findCardByNumber(commandInput.getCardNumber()).getStatus().equals("frozen")) {
-                fieldNode.put("description", "The card is frozen");
-                fieldNode.put("timestamp", commandInput.getTimestamp());
-                transactionArray.add(fieldNode);
+                transaction = new CardFrozenError(commandInput.getTimestamp());
+                transactionsArray.add(transaction);
+                account.getAccountTransactions().add(transaction);
                 return;
             }
 
             if(account.getBalance() < convertedAmount) {
-                fieldNode.put("description", "Insufficient funds");
-                fieldNode.put("timestamp", commandInput.getTimestamp());
-                transactionArray.add(fieldNode);
+                transaction = new InsufficientFundsError(commandInput.getTimestamp());
+                transactionsArray.add(transaction);
+                account.getAccountTransactions().add(transaction);
                 return;
             }
 
             account.subtractFunds(convertedAmount);
 
-            fieldNode.put("amount", convertedAmount);
-            fieldNode.put("commerciant", commandInput.getCommerciant());
-            fieldNode.put("description", "Card payment");
-            fieldNode.put("timestamp", commandInput.getTimestamp());
-            transactionArray.add(fieldNode);
+            transaction = new PayOnlineTransaction(commandInput.getTimestamp(),
+                    convertedAmount, commandInput.getCommerciant());
 
-            // IMPLEMENTARE TEMP
-            account.getTransactions().add(fieldNode);
+            CommerciantReport commerciant = new CommerciantReport(commandInput.getTimestamp(),
+                    convertedAmount, commandInput.getCommerciant(), transaction);
 
-            ObjectNode commerciantNode = mapper.createObjectNode();
-            commerciantNode.put("commerciant", commandInput.getCommerciant());
-            commerciantNode.put("total", convertedAmount);
-            account.getCommerciants().add(commerciantNode);
+            transactionsArray.add(transaction);
+            account.getAccountTransactions().add(transaction);
+            account.getCommerciantInteractions().add(commerciant);
 
             Card card = bank.findCardByNumber(commandInput.getCardNumber());
             if(card.isOneTimeCard()) {
                 card.setCardNumber(Utils.generateCardNumber());
             }
         } else {
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode fieldNode = mapper.createObjectNode();
+            ObjectNode outputNode = mapper.createObjectNode();
+
             fieldNode.put("command", commandInput.getCommand());
 
             outputNode.put("description", "Card not found");

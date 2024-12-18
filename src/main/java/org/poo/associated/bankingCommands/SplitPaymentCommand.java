@@ -6,9 +6,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
+import org.poo.associated.userRelated.transaction.SplitPaymentTransaction;
+import org.poo.associated.userRelated.transaction.Transaction;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
 
+import javax.xml.crypto.dsig.TransformService;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,13 +37,11 @@ public final class SplitPaymentCommand implements BankingCommand {
 
             if (account.getBalance() < requiredAmountInAccountCurrency) {
                 for (Account errorAccount : payingAccounts) {
-                    ArrayNode transactionArray = bank.getTransactionDatabase().get(errorAccount.getBelongsToEmail());
-                    ObjectNode fieldNode = mapper.createObjectNode();
+                    List<Transaction> transactionArray = bank.getUserTransactionsDatabase().get(errorAccount.getBelongsToEmail());
 
-                    fieldNode.put("description", "Insufficient funds for split payment");
-                    fieldNode.put("timestamp", commandInput.getTimestamp());
-
-                    transactionArray.add(fieldNode);
+//                    fieldNode.put("description", "Insufficient funds for split payment");
+//                    fieldNode.put("timestamp", commandInput.getTimestamp());
+//                    transactionArray.add(fieldNode);
                 }
                 return;
             }
@@ -53,15 +54,11 @@ public final class SplitPaymentCommand implements BankingCommand {
 
             account.subtractFunds(requiredAmountInAccountCurrency);
 
-            ArrayNode transactionArray = bank.getTransactionDatabase().get(account.getBelongsToEmail());
+            List<Transaction> transactionArray = bank.getUserTransactionsDatabase().get(account.getBelongsToEmail());
 
-            transactionNode.put("amount", splitAmount);
-            transactionNode.put("currency", commandInput.getCurrency());
-            transactionNode.put("description", "Split payment of " + String.format("%.2f", commandInput.getAmount()) + " " + commandInput.getCurrency());
-            transactionNode.put("involvedAccounts", mapper.valueToTree(commandInput.getAccounts()));
-            transactionNode.put("timestamp", commandInput.getTimestamp());
+            Transaction transaction = new SplitPaymentTransaction(commandInput.getTimestamp(), "Split payment of " + String.format("%.2f", commandInput.getAmount()) + " " + commandInput.getCurrency() , commandInput.getCurrency(), splitAmount, commandInput.getAccounts());
 
-            transactionArray.add(transactionNode);
+            transactionArray.add(transaction);
         }
     }
 }

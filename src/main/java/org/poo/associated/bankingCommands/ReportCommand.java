@@ -6,9 +6,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
+import org.poo.associated.userRelated.transaction.Transaction;
 import org.poo.fileio.CommandInput;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ReportCommand implements BankingCommand {
+public final class ReportCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         ObjectMapper mapper = new ObjectMapper();
@@ -20,25 +23,21 @@ public class ReportCommand implements BankingCommand {
             return;
         }
 
-        ArrayNode transactionArray = account.getTransactions();
-        if (transactionArray == null) {
-            transactionArray = mapper.createArrayNode();
-        }
+        Bank bank = Bank.getInstance();
 
-        ArrayNode filteredTransactions = mapper.createArrayNode();
-        transactionArray.forEach(transaction -> {
-            if (transaction.has("timestamp") && transaction.get("timestamp").asInt() >= commandInput.getStartTimestamp()
-                    && transaction.get("timestamp").asInt() <= commandInput.getEndTimestamp()) {
+        List<Transaction> filteredTransactions = new ArrayList<>();
+
+        account.getAccountTransactions().forEach(transaction -> {
+            if (transaction.getTimestamp() >= commandInput.getStartTimestamp() && transaction.getTimestamp() <= commandInput.getEndTimestamp()) {
                 filteredTransactions.add(transaction);
             }
         });
-
 
         ObjectNode outputNode = mapper.createObjectNode();
         outputNode.put("balance", account.getBalance());
         outputNode.put("currency", account.getCurrency());
         outputNode.put("IBAN", account.getIBAN());
-        outputNode.put("transactions", filteredTransactions);
+        outputNode.put("transactions", mapper.valueToTree(filteredTransactions));
 
         fieldNode.put("command", commandInput.getCommand());
         fieldNode.set("output", outputNode);

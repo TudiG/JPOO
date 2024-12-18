@@ -5,7 +5,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
+import org.poo.associated.userRelated.transaction.Transaction;
 import org.poo.fileio.CommandInput;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public final class PrintTransactionsCommand implements BankingCommand {
     @Override
@@ -13,20 +18,12 @@ public final class PrintTransactionsCommand implements BankingCommand {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode fieldNode = mapper.createObjectNode();
 
-        ArrayNode transactionArray = Bank.getInstance().getTransactionDatabase().get(commandInput.getEmail());
-        if (transactionArray == null) {
-            transactionArray = mapper.createArrayNode();
-        }
+        Bank bank = Bank.getInstance();
 
-        ArrayNode filteredTransactions = mapper.createArrayNode();
-        transactionArray.forEach(transaction -> {
-            if (transaction.has("timestamp") && transaction.get("timestamp").asInt() <= commandInput.getTimestamp()) {
-                filteredTransactions.add(transaction);
-            }
-        });
+        List<Transaction> transactionArray = bank.getUserTransactionsDatabase().get(commandInput.getEmail());
 
         fieldNode.put("command", commandInput.getCommand());
-        fieldNode.set("output", filteredTransactions);
+        fieldNode.set("output", mapper.valueToTree(transactionArray));
         fieldNode.put("timestamp", commandInput.getTimestamp());
 
         output.add(fieldNode);

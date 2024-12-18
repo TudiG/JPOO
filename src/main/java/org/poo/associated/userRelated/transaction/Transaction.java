@@ -1,17 +1,13 @@
 package org.poo.associated.userRelated.transaction;
 
-import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-@Builder
-public class Transaction {
-    private Integer timestamp;
-    private String description;
-    private String card;
-    private String cardHolder;
-    private String account;
-    private Double amount;
-    private String commerciant;
-    private String senderIBAN;
-    private String receiverIBAN;
-    private String transferType;
+@Getter @Setter
+public abstract class Transaction {
+    protected Integer timestamp;
+
+    public Transaction(Integer timestamp) {
+        this.timestamp = timestamp;
+    }
 }

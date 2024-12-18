@@ -6,20 +6,25 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
+import org.poo.associated.userRelated.transaction.InsufficientFundsError;
+import org.poo.associated.userRelated.transaction.SendMoneyTransaction;
+import org.poo.associated.userRelated.transaction.Transaction;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
 import org.poo.utils.Utils;
+
+import java.util.List;
 
 // !TODO STRATEGY DOABLE
 
 public final class SendMoneyCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode fieldNode = mapper.createObjectNode();
-
         Bank bank = Bank.getInstance();
-        ArrayNode transactionArray = bank.getTransactionDatabase().get(commandInput.getEmail());
+
+        List<Transaction> transactionsArray = bank.getUserTransactionsDatabase().get(commandInput.getEmail());
+        Transaction transactionSender = null;
+        Transaction transactionReceiver = null;
 
         if (Utils.isValidIBAN(commandInput.getReceiver()) && Utils.isValidIBAN(commandInput.getAccount())) {
             Account sender = bank.findAccountByIBAN(commandInput.getAccount());
@@ -30,9 +35,9 @@ public final class SendMoneyCommand implements BankingCommand {
             }
 
             if(sender.getBalance() < commandInput.getAmount()) {
-                fieldNode.put("description", "Insufficient funds");
-                fieldNode.put("timestamp", commandInput.getTimestamp());
-                transactionArray.add(fieldNode);
+                transactionSender = new InsufficientFundsError(commandInput.getTimestamp());
+                transactionsArray.add(transactionSender);
+                sender.getAccountTransactions().add(transactionSender);
                 return;
             }
 
@@ -43,17 +48,14 @@ public final class SendMoneyCommand implements BankingCommand {
             sender.subtractFunds(commandInput.getAmount());
             receiver.addFunds(convertedAmount);
 
-            fieldNode.put("timestamp", commandInput.getTimestamp());
-            fieldNode.put("description", commandInput.getDescription());
-            fieldNode.put("senderIBAN", sender.getIBAN());
-            fieldNode.put("receiverIBAN", receiver.getIBAN());
-            fieldNode.put("amount", commandInput.getAmount() + " " + sender.getCurrency());
-            fieldNode.put("transferType", "sent");
+            transactionSender = new SendMoneyTransaction(commandInput.getTimestamp(), commandInput.getDescription(), sender.getIBAN(), receiver.getIBAN(), commandInput.getAmount() + " " + sender.getCurrency(), "sent");
+            transactionReceiver = new SendMoneyTransaction(commandInput.getTimestamp(), commandInput.getDescription(), sender.getIBAN(), receiver.getIBAN(), commandInput.getAmount() + " " + sender.getCurrency(), "received");
 
-            transactionArray.add(fieldNode);
+            bank.getUserTransactionsDatabase().get(sender.getBelongsToEmail()).add(transactionSender);
+            bank.getUserTransactionsDatabase().get(receiver.getBelongsToEmail()).add(transactionReceiver);
 
-            // IMPLEMENTARE TEMP
-            sender.getTransactions().add(fieldNode);
+             sender.getAccountTransactions().add(transactionSender);
+             receiver.getAccountTransactions().add(transactionReceiver);
         }
     }
 }

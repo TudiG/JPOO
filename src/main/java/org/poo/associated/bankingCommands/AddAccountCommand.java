@@ -7,29 +7,28 @@ import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.accounts.accountUtilities.AccountFactory;
+import org.poo.associated.userRelated.transaction.AccountCreatedTransaction;
+import org.poo.associated.userRelated.transaction.Transaction;
 import org.poo.fileio.CommandInput;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class AddAccountCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
+        Bank bank = Bank.getInstance();
         Account account = AccountFactory.createAccount(commandInput, commandInput.getEmail());
 
-        Bank.getInstance().getUsers().stream()
+        bank.getUsers().stream()
                 .filter(user -> commandInput.getEmail().equals(user.getEmail()))
                 .forEach(user -> user.getAccounts().add(account));
 
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode fieldNode = mapper.createObjectNode();
+        Transaction transaction = new AccountCreatedTransaction(commandInput.getTimestamp());
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.add(transaction);
 
-        fieldNode.put("timestamp", commandInput.getTimestamp());
-        fieldNode.put("description", "New account created");
-
-        ArrayNode accountsNode = mapper.createArrayNode();
-        accountsNode.add(fieldNode);
-
-        Bank.getInstance().getTransactionDatabase().put(commandInput.getEmail(), accountsNode);
-
-        // TEMP IMPLEM
-        account.getTransactions().add(fieldNode);
+        bank.getUserTransactionsDatabase().put(commandInput.getEmail(), transactions);
+        account.getAccountTransactions().add(transaction);
     }
 }

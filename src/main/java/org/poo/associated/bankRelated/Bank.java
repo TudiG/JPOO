@@ -3,9 +3,10 @@ package org.poo.associated.bankRelated;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import lombok.Getter;
 import org.poo.associated.userRelated.card.Card;
+import org.poo.associated.userRelated.transaction.Transaction;
 import org.poo.associated.userRelated.user.User;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 
@@ -13,12 +14,14 @@ import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 public final class Bank {
     private List<User> users;
     private static Bank bankInstance;
-    private Map<String, ArrayNode> transactionDatabase;
     private Map<String, Alias> aliasDatabase;
 
+    // Se va folosi pentru noua implementare a tranzactiilor
+    private Map<String, List<Transaction>> userTransactionsDatabase;
+
     private Bank() {
-        transactionDatabase = new HashMap<>();
         aliasDatabase = new HashMap<>();
+        userTransactionsDatabase = new HashMap<>();
     }
 
     public synchronized static Bank getInstance() {
@@ -31,12 +34,6 @@ public final class Bank {
 
     public void addAllUsers(final List<User> users) {
         this.users = users;
-    }
-
-    public User findUserByEmail(String email) {
-        return users.stream()
-                .filter(user -> email.equals(user.getEmail()))
-                .findFirst().orElse(null);
     }
 
     public User findUserByCardNumber(String cardNumber) {

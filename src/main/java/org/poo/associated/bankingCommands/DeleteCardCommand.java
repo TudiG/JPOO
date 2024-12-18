@@ -6,17 +6,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
+import org.poo.associated.userRelated.transaction.CardDeletedTransaction;
+import org.poo.associated.userRelated.transaction.Transaction;
 import org.poo.fileio.CommandInput;
 
 public final class DeleteCardCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode fieldNode = mapper.createObjectNode();
-
         Bank bank = Bank.getInstance();
-        ArrayNode transactionArray = bank.getTransactionDatabase().get(commandInput.getEmail());
+
         Account accountToRemoveFrom = bank.findAccountByCardNumber(commandInput.getCardNumber());
+
+        if(accountToRemoveFrom == null) {
+            return;
+        }
 
         Bank.getInstance().getUsers().stream()
                 .filter(user -> commandInput.getEmail().equalsIgnoreCase(user.getEmail()))
@@ -27,14 +30,10 @@ public final class DeleteCardCommand implements BankingCommand {
                         )
                 );
 
-        if(accountToRemoveFrom != null) {
-            fieldNode.put("account", accountToRemoveFrom.getIBAN());
-            fieldNode.put("cardHolder", commandInput.getEmail());
-            fieldNode.put("card", commandInput.getCardNumber());
-            fieldNode.put("description", "The card has been destroyed");
-            fieldNode.put("timestamp", commandInput.getTimestamp());
+        Transaction transaction = new CardDeletedTransaction(commandInput.getTimestamp(),
+                commandInput.getCardNumber(), commandInput.getEmail(), accountToRemoveFrom.getIBAN());
 
-            transactionArray.add(fieldNode);
-        }
+        bank.getUserTransactionsDatabase().get(commandInput.getEmail()).add(transaction);
+        accountToRemoveFrom.getAccountTransactions().add(transaction);
     }
 }

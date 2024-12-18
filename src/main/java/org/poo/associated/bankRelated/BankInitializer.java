@@ -43,7 +43,7 @@ public final class BankInitializer {
         SimpleRateMapConverter.ratesMap.clear();
 
         Bank bank = Bank.getInstance();
-        bank.getTransactionDatabase().clear();
+        bank.getUserTransactionsDatabase().clear();
         bank.getAliasDatabase().clear();
     }
 }
