@@ -1,45 +1,88 @@
-# Project Assignment POO  - J. POO Morgan - Phase One
 
-![](https://s.yimg.com/ny/api/res/1.2/aN0SfZTtLF5hLNO0wIN3gg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTcwNTtoPTQyNztjZj13ZWJw/https://o.aolcdn.com/hss/storage/midas/b23d8b7f62a50a7b79152996890aa052/204855412/fit.gif)
 
+# Etapa 1 - JPOO
+Gavriliu Tudor Paul - 322CD
 #### Assignment Link: [https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/2024/proiect-e1](https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/2024/proiect-e1)
 
-## Skel Structure
+## Structura Temei
 
-* src/
-    * checker/ - checker files
-    * fileio/ - contains classes used to read data from the json files
-    * main/
-        * Main - the Main class runs the checker on your implementation. Add the entry point to your implementation in it. Run Main to test your implementation from the IDE or from command line.
-        * Test - run the main method from Test class with the name of the input file from the command line and the result will be written
-          to the out.txt file. Thus, you can compare this result with ref.
-* input/ - contains the tests in JSON format
-* ref/ - contains all reference output for the tests in JSON format
+* main/java/org.poo/
+    * associated/
+        * actionManager/
+            * commandInterface/
+                * GameCommand - Interfata GameCommand defineste o actiune specifica ce poate fi executata in cadrul unui joc.
+            * commands/* - Fisierul contine toate clasele specifice comenzilor date in timpul unui meci.
+            * commandUtilities/* - Fisierul contine clase utilitare folosite pentru verificare conditiilor efectuarii anumitor comenzi.
+            * ActionManager - Clasa ActionManager gestioneaza si executa comenzile date in timpul unui meci.
+        * cards/
+            * cardTemplates/* - Fisierul contine interfetele pentru actiunile cartilor si clasele abstracte extinse de toate cartile din joc.
+            * cardTypes/* - Fisierul contine clasele asociate celor 8 tipuri de minioni.
+            * heroTypes/* - Fisierul contine clasele asociate celor 4 tipuri de eroi.
+            * HeroFactory - Clasa HeroFactory este un factory care creeaza obiecte de tip HeroCard pe baza unui obiect de tip CardInput.
+            * MinionFactory - Clasa MinionFactory este un factory care creeaza obiecte de tip MinionCard pe baza unui obiect de tip CardInput.
+        * customPrettyPrinter/
+            * CustomPrettyPrinter - Aceasta clasa doar asigura o indentare asemanatoare cu cea din fisierele ref.
+        * gameInitializer/
+            * GameInitializer - Clasa GameInitializer initializeaza jocul si proceseaza datele de intrare pentru a crea obiectele necesare unui joc.
+        * gameRelated/
+            * GameBoard - Clasa GameBoard contine tabla de joc pe care se plaseaza cartile minion.
+            * GameService - Clasa GameService retine parametrii necesari pentru logica jocului.
+            * ScoreKeeper - Clasa ScoreKeeper contorizeaza scorul jucatorilor si numarul total de jocuri jucate.
+        * playerRelated/
+            * Player - Clasa Player retine toti parametrii specifici unui jucator.
+            * PlayerDeck - Clasa PlayerDeck reprezinta deck-ul unui jucator.
+            * PlayerHand - Clasa PlayerHand reprezinta mana unui jucator.
+        * GlobalVariable - contine constantele specifice temei.
 
-## Tests
+## Descrierea Modului de functionare
 
-Tests Basic 1 - 8: Infrastructure \
-Tests Functional 9 - 17: Advanced \
-Tests Flow 18 - 20: Large Input
+Codul incepe un joc cu intializarea sa in GameInitializer:
+1. Se initializeaza pentru mai multe jocuri:
+- scoreKeeper
 
-1. test01_create - 2p
-2. test02_delete - 2p
-3. test03_one_time_card - 2p
-4. test04_funds - 2p
-5. test05_money_flow - 2p
-6. test06_non_existing - 2p
-7. test07_send_money_part1 - 3p
-8. test08_send_money_part2 - 3p
-9. test09_print_transactions - 3p
-10. test10_errors - 3p
-11. test11_card_status - 5p
-12. test12_continuous_payments - 5p
-13. test13_savings_account - 5p
-14. test14_split_payments - 5p
-15. test15_every_payment - 5p
-16. test16_report - 5p
-17. test17_spendings_report - 5p
-18. test18_large_input_1 - 7p
-19. test19_large_input_2 - 7p
-20. test19_large_input_3 - 7p
+2. Se initializeaza jocul curent pe baza datelor din inputData:
+- playerOneHero + playerTwoHero
+- playerOneDeck + playerTwoDeck
+- PlayerOne + PlayerTwo + referinta catre Player-ul curent
+- gameBoard, contine o lista de liste (4x5 slot-uri)
+- gameService + este initializata runda 1 a jocului
 
+Pe baza cartilor de tip CardInput se creeaza printr-un MinionFactory
+cartile care vor intra intr-un deck, acestea urmand sa fie amestecate.
+Acelasi proces este efectuat si pentru erou printr-un HeroFactory.
+
+De asemenea, MinionCard este o clasa abstracta care:
+- implementeaza interfata MinionCardActions().
+- este extinsa de cele 8 tipuri de minioni, care fac override
+  doar la metoda useAbility(...).
+
+Procesul este identic pentru cei 4 eroi, doar ca acestia au clasa o
+abstracta proprie si o interfata proprie.
+
+Comenzile date la actionInput sunt "prelucrate" in ActionManager.
+Acesta detine un Map (cheile corespund cu numele comenzilor),
+si executa comenzile din Map pe baza design pattern-ului command:
+- Comenzile au clasele lor specifice si implementeaza interfata GameCommand
+  cu metoda execute(...)
+- Aceste clase fac override la metoda execute(...),
+  implementand functionalitatea dorita de la fiecare comanda.
+
+Output-ul dorit este serializat in cadrul metodelor execute() din fiecare comanda.
+Exceptie de la aceasta conventie fac:
+- UseAttackHeroCommand (output-ul este dat din cadrul cartii care ucide eroul).
+- Toate clasele utilitare care tin de verificarea conditiilor pentru efectuarea
+  unei comenzi (cazul in care se intampina o eroare).
+
+## Pattern-uri folosite
+#### Singleton Eager Design Pattern:
+1. GameInitializer
+2. ActionManager
+
+#### Factory Design Pattern:
+1. HeroFactory
+2. MinionFactory
+
+#### Command Design Pattern:
+1. src/associated/actionManager/commands/*
+
+<div align="center"><img src="https://media1.tenor.com/m/aNAxmoSej-MAAAAd/dead-yukari.gif" width="300px"></div>
