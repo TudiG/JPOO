@@ -4,14 +4,18 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
-import org.poo.associated.userRelated.transactions.InsufficientFundsError;
-import org.poo.associated.userRelated.transactions.SendMoneyTransaction;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.InsufficientFundsError;
+import org.poo.associated.transactionRelated.SendMoneyTransaction;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
 import org.poo.utils.Utils;
 import java.util.List;
 
+/**
+ * Comanda care permite transferul de bani intre doua conturi bancare.
+ * Verifica daca exista suficiente fonduri in contul sursa si efectueaza transferul.
+ */
 public final class SendMoneyCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {

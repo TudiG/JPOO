@@ -4,14 +4,20 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
-import org.poo.associated.userRelated.transactions.SplitPaymentError;
-import org.poo.associated.userRelated.transactions.SplitPaymentTransaction;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.SplitPaymentError;
+import org.poo.associated.transactionRelated.SplitPaymentTransaction;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Comanda pentru procesarea unei plata distribuite, in care o suma specificata
+ * este impartita intre mai multe conturi. Daca un cont nu are fondurile necesare
+ * pentru a acoperi partea sa din plata, se va adauga o tranzactie de eroare tuturor
+ * participantilor.
+ */
 public final class SplitPaymentCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
@@ -23,33 +29,36 @@ public final class SplitPaymentCommand implements BankingCommand {
 
         double splitAmount = commandInput.getAmount() / payingAccounts.size();
 
-        for (Account account : payingAccounts.reversed()) {
-            String rateKey = account.getCurrency() + "-" + commandInput.getCurrency();
-            Double rate = SimpleRateMapConverter.getRatesMap().get(rateKey);
-            double requiredAmountInAccountCurrency = splitAmount / rate;
+        Account failedAccount = payingAccounts.reversed().stream()
+                .filter(account -> {
+                    String rateKey = account.getCurrency() + "-" + commandInput.getCurrency();
+                    Double rate = SimpleRateMapConverter.getRatesMap().get(rateKey);
+                    double requiredAmountInAccountCurrency = splitAmount / rate;
+                    return account.getBalance() < requiredAmountInAccountCurrency;
+                })
+                .findFirst()
+                .orElse(null);
 
-            if (account.getBalance() < requiredAmountInAccountCurrency) {
-                for (Account errorAccount : payingAccounts) {
-                    List<Transaction> transactionArray = bank.getUserTransactionsDatabase()
-                            .get(errorAccount.getBelongsToEmail());
+        if (failedAccount != null) {
+            payingAccounts.forEach(account -> {
+                List<Transaction> transactionArray = bank.getUserTransactionsDatabase()
+                        .get(account.getBelongsToEmail());
 
-                    String description = "Split payment of "
-                            + String.format("%.2f", commandInput.getAmount())
-                            + " " + commandInput.getCurrency();
+                String description = "Split payment of "
+                        + String.format("%.2f", commandInput.getAmount())
+                        + " " + commandInput.getCurrency();
 
-                    Transaction transaction = new SplitPaymentError(commandInput.getTimestamp(),
-                            description, commandInput.getCurrency(), splitAmount,
-                            commandInput.getAccounts(), account.getIban());
+                Transaction transaction = new SplitPaymentError(commandInput.getTimestamp(),
+                        description, commandInput.getCurrency(), splitAmount,
+                        commandInput.getAccounts(), failedAccount.getIban());
 
-                    transactionArray.add(transaction);
-                    errorAccount.getAccountTransactions().add(transaction);
-                }
-
-                return;
-            }
+                transactionArray.add(transaction);
+                account.getAccountTransactions().add(transaction);
+            });
+            return;
         }
 
-        for (Account account : payingAccounts) {
+        payingAccounts.forEach(account -> {
             String rateKey = account.getCurrency() + "-" + commandInput.getCurrency();
             double rate = SimpleRateMapConverter.getRatesMap().get(rateKey);
             double requiredAmountInAccountCurrency = splitAmount / rate;
@@ -69,6 +78,6 @@ public final class SplitPaymentCommand implements BankingCommand {
 
             transactionArray.add(transaction);
             account.getAccountTransactions().add(transaction);
-        }
+        });
     }
 }

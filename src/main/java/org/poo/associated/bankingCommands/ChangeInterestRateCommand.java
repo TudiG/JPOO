@@ -7,10 +7,15 @@ import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.SavingsAccount;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
-import org.poo.associated.userRelated.transactions.InterestRateChangeTransaction;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.InterestRateChangeTransaction;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 
+/**
+ * Comanda pentru a schimba rata dobanzii unui cont de economii.
+ * Aceasta modifica rata dobanzii doar pentru conturile de economii si inregistreaza tranzactia.
+ * In caz contrar, se afiseaza un mesaj de eroare.
+ */
 public final class ChangeInterestRateCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
@@ -23,7 +28,7 @@ public final class ChangeInterestRateCommand implements BankingCommand {
 
         if (account.getClass().equals(SavingsAccount.class)) {
             SavingsAccount savingsAccount = (SavingsAccount) account;
-            savingsAccount.setInterestRate(commandInput.getInterestRate());
+            savingsAccount.updateInterestRate(commandInput.getInterestRate());
 
             Transaction transaction = new InterestRateChangeTransaction(commandInput.getTimestamp(),
                     commandInput.getInterestRate());

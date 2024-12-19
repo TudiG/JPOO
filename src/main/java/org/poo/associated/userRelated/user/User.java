@@ -8,6 +8,10 @@ import org.poo.fileio.UserInput;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Aceasta clasa centralizeaza toate datele unui utilizator,
+ * reprezantand profilul unui utilizator al bancii.
+ */
 @Getter @AllArgsConstructor @NoArgsConstructor
 public final class User {
     private String firstName;

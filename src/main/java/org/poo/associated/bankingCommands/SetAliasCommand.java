@@ -7,6 +7,10 @@ import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.fileio.CommandInput;
 
+/**
+ * Comanda care creeaza si stocheaza un alies creeat de un
+ * utilizator.
+ */
 public final class SetAliasCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {

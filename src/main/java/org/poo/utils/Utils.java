@@ -60,6 +60,7 @@ public final class Utils {
 
     /**
      * Metoda verifica daca String-ul trimis este defapt un alias, sau un IBAN normal.
+     *
      * @param iban String-ul primit la intrare
      * @return true daca este un IBAN normal, altfel false in orice alt caz
      */

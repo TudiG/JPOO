@@ -24,6 +24,10 @@ import org.poo.fileio.CommandInput;
 
 import java.util.HashMap;
 
+/**
+ * Aceasta clasa contine toate comenzile care se dau pe parcursul
+ * executarii programului.
+ */
 public final class CommandService {
     private static CommandService serviceInstance;
     private HashMap<String, BankingCommand> bankingCommands = new HashMap<>();
@@ -50,8 +54,9 @@ public final class CommandService {
     }
 
     /**
+     * Metoda pentru returnarea instantei Singleton.
      *
-     * @return
+     * @return instanta clasei CommandService
      */
     public static synchronized CommandService getInstance() {
         if (serviceInstance == null) {
@@ -62,7 +67,7 @@ public final class CommandService {
     }
 
     /**
-     *
+     * Metoda executa fiecare comanda, in funcite de comanda primita la intrare.
      * @param commandInput
      * @param output
      */

@@ -10,9 +10,11 @@ public final class UserConverter {
     private UserConverter() { }
 
     /**
+     * Metoda aceasta converteste un vector de userInputs intr-o
+     * lista de obiecete de tip User pentru prelucrarea eventuala.
      *
-     * @param userInputs
-     * @return
+     * @param userInputs vectorul de userInputs dat la intrare
+     * @return o lista cu obiecte de tip User
      */
     public static List<User> convertUsersFromInput(final UserInput[] userInputs) {
         return Arrays.stream(userInputs).map(User::new).collect(Collectors.toList());

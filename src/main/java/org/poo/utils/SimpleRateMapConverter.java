@@ -10,7 +10,9 @@ import lombok.Getter;
 import org.poo.fileio.ExchangeInput;
 
 /**
- * Aceasta clasa este utilizata doar pentru a obtine rate de exchange intermediare.
+ * Aceasta clasa este utilizata pentru a obtine rate de schimb intermediare
+ * pe baza unui set de rate initiale. Ratele de schimb sunt salvate intr-un
+ * map si pot fi folosite ulterior pentru conversii.
  */
 public final class SimpleRateMapConverter {
     @Getter
@@ -19,8 +21,10 @@ public final class SimpleRateMapConverter {
     private SimpleRateMapConverter() { }
 
     /**
+     * Precalculeaza ratele pentru fiecare pereche, inclusiv ratele intermediare
+     * obtinute pe baza ratelor deja existente.
      *
-     * @param exchangeInputs exchangeRate-urile de la input
+     * @param exchangeInputs lista de rate de schimb de la input
      */
     public static void precomputeRates(final List<ExchangeInput> exchangeInputs) {
         Set<String> currencies = new HashSet<>();

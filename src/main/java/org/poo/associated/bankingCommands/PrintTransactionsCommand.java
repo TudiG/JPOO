@@ -5,10 +5,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 import java.util.List;
 
+/**
+ * Comanda care afiseaza toate tranzactiile unui utilizator specificat.
+ */
 public final class PrintTransactionsCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {

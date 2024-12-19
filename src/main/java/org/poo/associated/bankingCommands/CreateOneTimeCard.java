@@ -4,11 +4,17 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.card.Card;
-import org.poo.associated.userRelated.transactions.NewCardTransaction;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.NewCardTransaction;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.Utils;
 
+/**
+ * Comanda pentru a crea un card nou de tip oneTime pentru un utilizator.
+ * Daca contul este asociat utilizatorului, se genereaza un numar de card si se adauga
+ * in contul respectiv.
+ * Se inregistreaza o tranzactie de creare a cardului.
+ */
 public final class CreateOneTimeCard implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {

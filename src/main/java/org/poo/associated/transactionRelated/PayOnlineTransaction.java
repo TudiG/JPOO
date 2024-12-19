@@ -1,8 +1,11 @@
-package org.poo.associated.userRelated.transactions;
+package org.poo.associated.transactionRelated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 
+/**
+ * Aceasta clasa este instantiata cand se efectueaza o plata cu cardul cu succes.
+ */
 public final class PayOnlineTransaction extends Transaction {
     @JsonProperty("description")
     private String description;

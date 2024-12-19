@@ -5,13 +5,17 @@ import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.accounts.accountUtilities.AccountFactory;
-import org.poo.associated.userRelated.transactions.AccountCreatedTransaction;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.AccountCreatedTransaction;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Comanda pentru a adauga un cont nou unui utilizator existent.
+ * Aceasta comanda creeaza un cont nou si il asociaza unui utilizator.
+ */
 public final class AddAccountCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {

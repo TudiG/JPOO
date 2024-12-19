@@ -7,13 +7,17 @@ import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.SavingsAccount;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
-import org.poo.associated.userRelated.commerciantReport.CommerciantReport;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.commerciantReport.CommerciantReport;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Comanda pentru generarea unui raport de cheltuieli, care include tranzacțiile
+ * cu comercianții pentru un anumit cont, într-un interval de timp specificat.
+ */
 public final class SpendingsReportCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {

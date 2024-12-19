@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Clasa care reprezinta un card. Pentru simplitate am ales
+ * sa folosesc o singura clasa pentru cele doua tipuri de
+ * carduri valabile.
+ */
 @Getter @Setter
 public final class Card {
     private String cardNumber;

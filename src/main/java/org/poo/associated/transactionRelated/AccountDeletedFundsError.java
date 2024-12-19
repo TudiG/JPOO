@@ -1,8 +1,12 @@
-package org.poo.associated.userRelated.transactions;
+package org.poo.associated.transactionRelated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 
+/**
+ * Aceasta clasa este instantiata cand se incearca stergerea unui cont
+ * care inca are fonduri in el.
+ */
 public final class AccountDeletedFundsError extends Transaction {
     @JsonProperty("description")
     private String description;

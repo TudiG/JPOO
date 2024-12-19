@@ -6,6 +6,9 @@ import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.fileio.CommandInput;
 
+/**
+ * Comanda pentru actualizarea balantei minime a unui cont.
+ */
 public final class SetMinimumBalanceCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
@@ -15,6 +18,6 @@ public final class SetMinimumBalanceCommand implements BankingCommand {
             return;
         }
 
-        account.setMinimumBalance(commandInput.getAmount());
+        account.updateMinimumBalance(commandInput.getAmount());
     }
 }

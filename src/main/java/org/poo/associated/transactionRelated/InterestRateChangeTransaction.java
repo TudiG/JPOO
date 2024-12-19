@@ -1,8 +1,12 @@
-package org.poo.associated.userRelated.transactions;
+package org.poo.associated.transactionRelated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 
+/**
+ * Aceasta clasa este instantiata atunci cand se efectueaza schimbarea dobanzii
+ * unui cont de tip SavingsAccount.
+ */
 public class InterestRateChangeTransaction extends Transaction {
     @JsonProperty("description")
     private String description;

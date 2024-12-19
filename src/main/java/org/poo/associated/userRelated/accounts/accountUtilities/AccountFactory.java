@@ -8,9 +8,11 @@ public final class AccountFactory {
     private AccountFactory() { }
 
     /**
+     * Metoda aceasta implementeaza un factory foarte simplu pentru
+     * creearea unui cont nou, care poate sa fie fie clasic, fie de economii.
      *
-     * @param commandInput
-     * @param belongsToEmail
+     * @param commandInput contine toate datele necesare unui cont.
+     * @param belongsToEmail email-ul asociat contului
      * @return
      */
     public static Account createAccount(final CommandInput commandInput,

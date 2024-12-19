@@ -1,10 +1,13 @@
-package org.poo.associated.userRelated.transactions;
+package org.poo.associated.transactionRelated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
-
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import java.util.List;
 
+/**
+ * Aceasta clasa este instantiata cand este efectuata plata distribuita cu succes,
+ * urmand sa fie adaugat la lista tranzactiile tuturor care au platit.
+ */
 public class SplitPaymentTransaction extends Transaction {
     @JsonProperty("description")
     protected String description;

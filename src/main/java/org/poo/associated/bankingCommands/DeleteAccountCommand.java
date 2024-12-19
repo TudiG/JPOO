@@ -5,10 +5,15 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
-import org.poo.associated.userRelated.transactions.AccountDeletedFundsError;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.AccountDeletedFundsError;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 
+/**
+ * Comanda pentru stergerea unui cont.
+ * Contul poate fi sters doar daca are un sold de 0.
+ * Daca contul nu poate fi sters, se inregistreaza o tranzactie de eroare.
+ */
 public final class DeleteAccountCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {

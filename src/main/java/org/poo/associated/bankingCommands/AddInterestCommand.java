@@ -9,6 +9,11 @@ import org.poo.associated.userRelated.accounts.SavingsAccount;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.fileio.CommandInput;
 
+/**
+ * Comanda pentru a adauga dobanda unui cont de economii.
+ * Aceasta verifica daca contul este un cont de economii si, daca da, aplica dobanda.
+ * In caz contrar, se afiseaza un mesaj de eroare.
+ */
 public final class AddInterestCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {

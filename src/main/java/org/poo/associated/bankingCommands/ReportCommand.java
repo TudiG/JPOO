@@ -6,11 +6,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Comanda care genereaza un raport pentru un cont specificat.
+ * Raportul include soldul contului, moneda, IBAN-ul si tranzactiile care au
+ * avut loc intr-un interval de timp specificat.
+ */
 public final class ReportCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {

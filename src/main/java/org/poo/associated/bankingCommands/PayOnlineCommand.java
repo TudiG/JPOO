@@ -7,19 +7,23 @@ import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.card.Card;
-import org.poo.associated.userRelated.transactions.CardDeletedTransaction;
-import org.poo.associated.userRelated.transactions.CardFrozenError;
-import org.poo.associated.userRelated.commerciantReport.CommerciantReport;
-import org.poo.associated.userRelated.transactions.InsufficientFundsError;
-import org.poo.associated.userRelated.transactions.NewCardTransaction;
-import org.poo.associated.userRelated.transactions.PayOnlineTransaction;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.CardDeletedTransaction;
+import org.poo.associated.transactionRelated.CardFrozenError;
+import org.poo.associated.transactionRelated.commerciantReport.CommerciantReport;
+import org.poo.associated.transactionRelated.InsufficientFundsError;
+import org.poo.associated.transactionRelated.NewCardTransaction;
+import org.poo.associated.transactionRelated.PayOnlineTransaction;
+import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
 import org.poo.utils.Utils;
 
 import java.util.List;
 
+/**
+ * Comanda pentru efectuarea unui plati online.
+ * Verifica diverse conditii (card inghetat, fonduri insuficiente) si inregistreaza tranzactia.
+ */
 public final class PayOnlineCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
