@@ -26,34 +26,29 @@ public final class PayOnlineCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         Bank bank = Bank.getInstance();
-        Account account = bank.findAccountByCardNumber(commandInput.getCardNumber());
+        Card card = bank.findCardByNumber(commandInput.getCardNumber());
 
-        List<Transaction> transactionsArray = bank.getUserTransactionsDatabase()
-                .get(commandInput.getEmail());
-
-        Transaction transaction = null;
-
-        if (account == null) {
+        if (card == null) {
             StaticOutputs.notFound(commandInput, Utils.CARD_NOT_FOUND, output);
             return;
         }
 
-        String rateKey = commandInput.getCurrency() + "-" + account.getCurrency();
-        double rate = SimpleRateMapConverter.getRatesMap().get(rateKey);
-        double convertedAmount = rate * commandInput.getAmount();
+        Account account = bank.findAccountByCardNumber(card.getCardNumber());
+        List<Transaction> transactionsArray = bank.getUserTransactionsDatabase()
+                .get(account.getBelongsToEmail());
+        Transaction transaction = null;
 
-        if (!bank.findUserByCardNumber(commandInput.getCardNumber()).getEmail()
-                .equals(commandInput.getEmail())) {
-            return;
-        }
-
-        if (bank.findCardByNumber(commandInput.getCardNumber()).getStatus().equals("frozen")) {
+        if (bank.findCardByNumber(card.getCardNumber()).getStatus().equals("frozen")) {
             transaction = new CardFrozenError(commandInput.getTimestamp());
 
             transactionsArray.add(transaction);
             account.getAccountTransactions().add(transaction);
             return;
         }
+
+        String rateKey = commandInput.getCurrency() + "-" + account.getCurrency();
+        double rate = SimpleRateMapConverter.getRatesMap().get(rateKey);
+        double convertedAmount = rate * commandInput.getAmount();
 
         if (account.getBalance() < convertedAmount) {
             transaction = new InsufficientFundsError(commandInput.getTimestamp());
@@ -74,16 +69,15 @@ public final class PayOnlineCommand implements BankingCommand {
         account.getAccountTransactions().add(transaction);
         account.getCommerciantInteractions().add(commerciantReport);
 
-        Card card = bank.findCardByNumber(commandInput.getCardNumber());
         if (card.isOneTimeCard()) {
             transaction = new CardDeletedTransaction(commandInput.getTimestamp(),
-                    card.getCardNumber(), commandInput.getEmail(), account.getIban());
+                    card.getCardNumber(), account.getBelongsToEmail(), account.getIban());
             transactionsArray.add(transaction);
 
             card.setCardNumber(Utils.generateCardNumber());
 
             transaction = new NewCardTransaction(commandInput.getTimestamp(),
-                    card.getCardNumber(), commandInput.getEmail(), account.getIban());
+                    card.getCardNumber(), account.getBelongsToEmail(), account.getIban());
             transactionsArray.add(transaction);
         }
     }

@@ -32,9 +32,9 @@ public final class AddAccountCommand implements BankingCommand {
             List<Transaction> transactions = new ArrayList<>();
 
             transactions.add(transaction);
-            bank.getUserTransactionsDatabase().put(commandInput.getEmail(), transactions);
+            bank.getUserTransactionsDatabase().put(account.getBelongsToEmail(), transactions);
         } else {
-            bank.getUserTransactionsDatabase().get(commandInput.getEmail()).add(transaction);
+            bank.getUserTransactionsDatabase().get(account.getBelongsToEmail()).add(transaction);
         }
 
         account.getAccountTransactions().add(transaction);

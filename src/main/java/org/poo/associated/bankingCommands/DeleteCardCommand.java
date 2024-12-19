@@ -17,19 +17,19 @@ public final class DeleteCardCommand implements BankingCommand {
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         Bank bank = Bank.getInstance();
 
-        Account accountToRemoveFrom = bank.findAccountByCardNumber(commandInput.getCardNumber());
+        Account account = bank.findAccountByCardNumber(commandInput.getCardNumber());
 
-        if (accountToRemoveFrom == null) {
+        if (account == null) {
             return;
         }
 
-        bank.deleteCardFromAccount(commandInput.getEmail(), commandInput.getCardNumber());
+        bank.deleteCardFromAccount(account.getBelongsToEmail(), commandInput.getCardNumber());
 
         Transaction transaction = new CardDeletedTransaction(commandInput.getTimestamp(),
-                commandInput.getCardNumber(), commandInput.getEmail(),
-                accountToRemoveFrom.getIban());
+                commandInput.getCardNumber(), account.getBelongsToEmail(),
+                account.getIban());
 
-        bank.getUserTransactionsDatabase().get(commandInput.getEmail()).add(transaction);
-        accountToRemoveFrom.getAccountTransactions().add(transaction);
+        bank.getUserTransactionsDatabase().get(account.getBelongsToEmail()).add(transaction);
+        account.getAccountTransactions().add(transaction);
     }
 }

@@ -21,7 +21,7 @@ public final class SetAliasCommand implements BankingCommand {
             return;
         }
 
-        Alias alias = new Alias(commandInput.getEmail(), account, commandInput.getAlias());
-        bank.getAliasDatabase().put(commandInput.getAlias(), alias);
+        Alias alias = new Alias(account.getBelongsToEmail(), account, commandInput.getAlias());
+        bank.getAliasDatabase().put(account.getBelongsToEmail(), alias);
     }
 }
