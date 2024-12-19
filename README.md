@@ -1,5 +1,3 @@
-
-
 # Etapa 1 - JPOO
 Gavriliu Tudor Paul - 322CD
 #### Assignment Link: [https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/2024/proiect-e1](https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/2024/proiect-e1)
@@ -41,42 +39,42 @@ Gavriliu Tudor Paul - 322CD
 
 ## Descrierea Modului de functionare
 
-Codul incepe un joc cu intializarea sa in GameInitializer:
-1. Se initializeaza pentru mai multe jocuri:
-- scoreKeeper
+Codul incepe rularea unui test in BankInitializer:
+- Sunt adaugati toti utilizatorii in banca prin intermediul unei clase utilitare. 
+- Sunt calculate toate ratele folosite in cadrul unui test in clasa SimpleRateMapConverter
+- Incepe executarea comenzilor prin CommandService.
+- Dupa executarea tuturor comenzilor date la intrare, sunt curatate toate datele utilizate in cadrul testului curent.
 
-2. Se initializeaza jocul curent pe baza datelor din inputData:
-- playerOneHero + playerTwoHero
-- playerOneDeck + playerTwoDeck
-- PlayerOne + PlayerTwo + referinta catre Player-ul curent
-- gameBoard, contine o lista de liste (4x5 slot-uri)
-- gameService + este initializata runda 1 a jocului
+Clasa CommandService are un camp numit bankingCommands care este reprezentat sub forma unui Map,
+astfel se retin toate comenzile date in timpul rularii. Prin metoda execute() sunt executate comenzile
+propriu-zise.
 
-Pe baza cartilor de tip CardInput se creeaza printr-un MinionFactory
-cartile care vor intra intr-un deck, acestea urmand sa fie amestecate.
-Acelasi proces este efectuat si pentru erou printr-un HeroFactory.
+Atunci cand se efectueaza orice fel de tranzactie, are loc acest proces:
+- sunt salvate datele specifice tranzactiei printr-o instanta a clasei TransactionData (construita cu Builder).
+- instanta TransactionDate este trimisa catre TransactionFactory.
+- este instantiat, cu datele din instanta TransactionData, si returnat obiectul corespunzator tranzactiei efectuate.
 
-De asemenea, MinionCard este o clasa abstracta care:
-- implementeaza interfata MinionCardActions().
-- este extinsa de cele 8 tipuri de minioni, care fac override
-  doar la metoda useAbility(...).
+Aceste tranzactii sunt apoi salvate in:
+1. In Map-ul din banca, fiind adaugate in lista corespunzatoare email-ului utilizatorului.
+2. Lista de tranzactii din contul care a fost folosit pentru tranzactie.
+3. In cazul in care tranzactie este rezultat din comanda PayOnline, aceasta va fi retinuta intr-un
+obiect de tipul CommerciantReport.
 
-Procesul este identic pentru cei 4 eroi, doar ca acestia au clasa o
-abstracta proprie si o interfata proprie.
+Am sa descriu modul in care am implementat comenziile de afisare si diferenta
+intre lista de tranzactii si lista de CommerciantReport:
+1. Pentru comanda PrintTranzactions:
+   - am ales sa retin toate tranzactiile unui utilizator intr-un Map (cheie = email, value = Lista de tranzactii),
+   stocat in instanta unica a banci, urmand ca toate acestea sa fie printate la apelarea comenzii.
+2. Pentru comanda Report:
+    - am ales sa retin toate tranzactiile unui utilizator facute cu un anumit cont in acelasi cont,
+   urmand sa filtrez si sa printez la output tranzactiile din intervalul dorit.
+3. Pentru comanda SpedingReport:
+    - am ales sa retin intr-o lista de tipul CommerciantReport doar tranzactiile ale unui utilizator,
+   facute cu un card, in contul asociat cardului care a efectuat plata, urmand sa filtrez si sa printez la
+   output comerciantii si tranzactiile cu cardul din intervalul dorit. 
 
-Comenzile date la actionInput sunt "prelucrate" in ActionManager.
-Acesta detine un Map (cheile corespund cu numele comenzilor),
-si executa comenzile din Map pe baza design pattern-ului command:
-- Comenzile au clasele lor specifice si implementeaza interfata GameCommand
-  cu metoda execute(...)
-- Aceste clase fac override la metoda execute(...),
-  implementand functionalitatea dorita de la fiecare comanda.
-
-Output-ul dorit este serializat in cadrul metodelor execute() din fiecare comanda.
-Exceptie de la aceasta conventie fac:
-- UseAttackHeroCommand (output-ul este dat din cadrul cartii care ucide eroul).
-- Toate clasele utilitare care tin de verificarea conditiilor pentru efectuarea
-  unei comenzi (cazul in care se intampina o eroare).
+Output-ul dorit este serializat in clasa StaticOutputs pentru a imbunatatii pe cat de mult posibil lizibilitatea
+codului din clasele de tip BankingCommand.
 
 ## Pattern-uri folosite
 #### Singleton Design Pattern:
@@ -94,4 +92,4 @@ Exceptie de la aceasta conventie fac:
 #### (Aproape) Command Design Pattern:
 1. java/org.poo/associated/bankingCommands/*
 
-<div align="center"><img src="https://media1.tenor.com/m/aNAxmoSej-MAAAAd/dead-yukari.gif" width="300px"></div>
+<div align="center"><img src="https://media1.tenor.com/m/aNAxmoSej-MAAAAd/dead-yukari.gif" width="600px"></div>
