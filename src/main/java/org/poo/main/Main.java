@@ -75,7 +75,7 @@ public final class Main {
 
         ArrayNode output = objectMapper.createArrayNode();
 
-        BankInitializer.getInstance().initialize(inputData, output);
+        BankInitializer.getInitializerInstance().initialize(inputData, output);
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(filePath2), output);

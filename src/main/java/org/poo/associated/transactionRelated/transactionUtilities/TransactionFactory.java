@@ -1,17 +1,17 @@
 package org.poo.associated.transactionRelated.transactionUtilities;
 
-import org.poo.associated.transactionRelated.AccountCreatedTransaction;
-import org.poo.associated.transactionRelated.AccountDeletedFundsError;
-import org.poo.associated.transactionRelated.CardDeletedTransaction;
-import org.poo.associated.transactionRelated.CardFrozenError;
-import org.poo.associated.transactionRelated.InsufficientFundsError;
-import org.poo.associated.transactionRelated.NewInterestRateTransaction;
-import org.poo.associated.transactionRelated.MinimumBalanceWarning;
-import org.poo.associated.transactionRelated.NewCardTransaction;
-import org.poo.associated.transactionRelated.PayOnlineTransaction;
-import org.poo.associated.transactionRelated.SendMoneyTransaction;
-import org.poo.associated.transactionRelated.SplitPaymentError;
-import org.poo.associated.transactionRelated.SplitPaymentTransaction;
+import org.poo.associated.transactionRelated.transactions.AccountCreatedTransaction;
+import org.poo.associated.transactionRelated.transactions.AccountDeletedFundsError;
+import org.poo.associated.transactionRelated.transactions.CardDeletedTransaction;
+import org.poo.associated.transactionRelated.transactions.CardFrozenError;
+import org.poo.associated.transactionRelated.transactions.InsufficientFundsError;
+import org.poo.associated.transactionRelated.transactions.NewInterestRateTransaction;
+import org.poo.associated.transactionRelated.transactions.MinimumBalanceWarning;
+import org.poo.associated.transactionRelated.transactions.NewCardTransaction;
+import org.poo.associated.transactionRelated.transactions.PayOnlineTransaction;
+import org.poo.associated.transactionRelated.transactions.SendMoneyTransaction;
+import org.poo.associated.transactionRelated.transactions.SplitPaymentError;
+import org.poo.associated.transactionRelated.transactions.SplitPaymentTransaction;
 
 public final class TransactionFactory {
     private TransactionFactory() { }

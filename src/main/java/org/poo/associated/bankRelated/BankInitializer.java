@@ -15,7 +15,7 @@ import java.util.Arrays;
  * apoi curata toate datele aferente ale bancii intre teste.
  */
 public final class BankInitializer {
-    private static BankInitializer instance;
+    private static BankInitializer initializerInstance;
 
     private BankInitializer() {
 
@@ -25,12 +25,12 @@ public final class BankInitializer {
      * Getter-ul pentru instanta BankInitializer.
      * @return instanta Singleton a clasei.
      */
-    public static synchronized BankInitializer getInstance() {
-        if (instance == null) {
-            instance = new BankInitializer();
+    public static synchronized BankInitializer getInitializerInstance() {
+        if (initializerInstance == null) {
+            initializerInstance = new BankInitializer();
         }
 
-        return instance;
+        return initializerInstance;
     }
 
     /**
@@ -44,7 +44,7 @@ public final class BankInitializer {
         SimpleRateMapConverter.precomputeRates(Arrays.asList(inputData.getExchangeRates()));
 
         for (CommandInput commandInput : inputData.getCommands()) {
-            CommandService.getInstance().executeCommands(commandInput, output);
+            CommandService.getServiceInstance().executeCommands(commandInput, output);
         }
 
         clearAllData();

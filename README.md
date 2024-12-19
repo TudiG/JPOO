@@ -8,31 +8,36 @@ Gavriliu Tudor Paul - 322CD
 
 * main/java/org.poo/
     * associated/
-        * actionManager/
-            * commandInterface/
-                * GameCommand - Interfata GameCommand defineste o actiune specifica ce poate fi executata in cadrul unui joc.
-            * commands/* - Fisierul contine toate clasele specifice comenzilor date in timpul unui meci.
-            * commandUtilities/* - Fisierul contine clase utilitare folosite pentru verificare conditiilor efectuarii anumitor comenzi.
-            * ActionManager - Clasa ActionManager gestioneaza si executa comenzile date in timpul unui meci.
-        * cards/
-            * cardTemplates/* - Fisierul contine interfetele pentru actiunile cartilor si clasele abstracte extinse de toate cartile din joc.
-            * cardTypes/* - Fisierul contine clasele asociate celor 8 tipuri de minioni.
-            * heroTypes/* - Fisierul contine clasele asociate celor 4 tipuri de eroi.
-            * HeroFactory - Clasa HeroFactory este un factory care creeaza obiecte de tip HeroCard pe baza unui obiect de tip CardInput.
-            * MinionFactory - Clasa MinionFactory este un factory care creeaza obiecte de tip MinionCard pe baza unui obiect de tip CardInput.
-        * customPrettyPrinter/
-            * CustomPrettyPrinter - Aceasta clasa doar asigura o indentare asemanatoare cu cea din fisierele ref.
-        * gameInitializer/
-            * GameInitializer - Clasa GameInitializer initializeaza jocul si proceseaza datele de intrare pentru a crea obiectele necesare unui joc.
-        * gameRelated/
-            * GameBoard - Clasa GameBoard contine tabla de joc pe care se plaseaza cartile minion.
-            * GameService - Clasa GameService retine parametrii necesari pentru logica jocului.
-            * ScoreKeeper - Clasa ScoreKeeper contorizeaza scorul jucatorilor si numarul total de jocuri jucate.
-        * playerRelated/
-            * Player - Clasa Player retine toti parametrii specifici unui jucator.
-            * PlayerDeck - Clasa PlayerDeck reprezinta deck-ul unui jucator.
-            * PlayerHand - Clasa PlayerHand reprezinta mana unui jucator.
-        * GlobalVariable - contine constantele specifice temei.
+        * bankRelated/
+          * Alias - Reprezinta alias-ul custom al unui utilizator. 
+          * Bank - Instanta unica a bancii.
+          * BankInitializer - Clasa care initializeaza si sterge datele bancii, fiind si startpoint-ul executarii comenzilor.
+        * commandService/
+          * bankingCommands/* - Contine toate comenzile date in timpul rularii.
+          * commandUtilities/
+            * BankingCommand - Reprezinta interfata comuna tuturor comenzilor.
+            * StaticOutputs - Aceasta clasa exista pentru a muta procesul de serializare din comenzile in alta parte.
+          * CommandService - Clasa care executa comenzile date la intrare.
+        * transactionRelated/
+          * commerciantReport/CommerciantReport - Aceasta clasa permite executarea usoara a comenzii SpendingReport.
+                                                  Detine informatii salvate in urma unei comenzi PayOnline.
+          * transactions/* - Contine toate tranzactiile efectuate/nereusite dorite la output, incapsulate in clase proprii.
+          * transactionUtilities/
+            * Transaction - Clasa abstracta extinsa de toate tranzactiile.
+            * TransactionData - Clasa care incapsuleaza diverse informatii pentru a fi preluate cu usurinta in TransactionFactory.
+            * TransactionFactory - Factory-ul care instantiaza toate tranzactiile cerute.
+        * userRelated/
+          * accounts/
+            * AccountUtilities/
+              * Account - Clasa abstracta extinsa de cele 2 tipuri de conturi.
+              * AccountFactory - Factory-ul care instantiaza conturile utilizatorilor.
+            * ClassicAccount - Clasa unui cont de tip clasic.
+            * SavingsAccount - Clasa unui cont de economii.
+          * card/Card - Clasa care reprezinta cardul unui utilizator.
+                        Pentru simplitate, oneTimeCard foloseste acieasi clasa.
+          * user/
+            * userUtilities/UserConverter - Convertorul de utilizatori dati la intrare in program.
+            * User - Clasa care reprezinta "contul" principal al unui utilizator al bancii.
 
 ## Descrierea Modului de functionare
 
@@ -74,15 +79,19 @@ Exceptie de la aceasta conventie fac:
   unei comenzi (cazul in care se intampina o eroare).
 
 ## Pattern-uri folosite
-#### Singleton Eager Design Pattern:
-1. GameInitializer
-2. ActionManager
+#### Singleton Design Pattern:
+1. BankInitializer
+2. Bank
+3. CommandService
 
 #### Factory Design Pattern:
-1. HeroFactory
-2. MinionFactory
+1. AccountFactory
+2. TransactionFactory
 
-#### Command Design Pattern:
-1. src/associated/actionManager/commands/*
+#### Builder Design Pattern (Lombok annotation):
+1. TransactionData (strans legat de TransactionFactory)
 
-<div align="center"><img src="https://imgur.com/persevere-SeeLGeJ" width="300px"></div>
+#### (Aproape) Command Design Pattern:
+1. java/org.poo/associated/bankingCommands/*
+
+<div align="center"><img src="https://media1.tenor.com/m/aNAxmoSej-MAAAAd/dead-yukari.gif" width="300px"></div>
