@@ -3,6 +3,8 @@ package org.poo.associated.bankingCommands;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionFactory;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.accounts.accountUtilities.AccountFactory;
 import org.poo.associated.transactionRelated.AccountCreatedTransaction;
@@ -26,7 +28,13 @@ public final class AddAccountCommand implements BankingCommand {
                 .filter(user -> commandInput.getEmail().equals(user.getEmail()))
                 .forEach(user -> user.getAccounts().add(account));
 
-        Transaction transaction = new AccountCreatedTransaction(commandInput.getTimestamp());
+//        Transaction transaction = new AccountCreatedTransaction(commandInput.getTimestamp());
+
+        TransactionData transactionData = TransactionData.builder()
+                .timestamp(commandInput.getTimestamp())
+                .build();
+        Transaction transaction = TransactionFactory
+                .createTransaction("AccountCreatedTransaction", transactionData);
 
         if (bank.getUserTransactionsDatabase().get(commandInput.getEmail()) == null) {
             List<Transaction> transactions = new ArrayList<>();
