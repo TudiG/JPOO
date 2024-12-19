@@ -33,7 +33,7 @@ public final class ChangeInterestRateCommand implements BankingCommand {
                     commandInput.getInterestRate());
 
             bank.getUserTransactionsDatabase().get(account.getBelongsToEmail()).add(transaction);
-            bank.findAccountByIBAN(account.getIban()).getAccountTransactions().add(transaction);
+            savingsAccount.getAccountTransactions().add(transaction);
         } else {
             StaticOutputs.isNotSavingsAccount(commandInput, output);
         }

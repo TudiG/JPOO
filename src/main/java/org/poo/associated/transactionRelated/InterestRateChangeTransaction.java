@@ -7,7 +7,7 @@ import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
  * Aceasta clasa este instantiata atunci cand se efectueaza schimbarea dobanzii
  * unui cont de tip SavingsAccount.
  */
-public class InterestRateChangeTransaction extends Transaction {
+public final class InterestRateChangeTransaction extends Transaction {
     @JsonProperty("description")
     private String description;
 

@@ -205,4 +205,17 @@ public final class StaticOutputs<T> {
 
         output.add(fieldNode);
     }
+
+    /**
+     * O metda care construieste descrierea care este serailizata la comanda de
+     * SplitPayment.
+     *
+     * @param commandInput date necesare data la input.
+     * @return descrierea folosita la SplitPayment.
+     */
+    public static String createDescription(final CommandInput commandInput) {
+        return "Split payment of "
+                + String.format("%.2f", commandInput.getAmount())
+                + " " + commandInput.getCurrency();
+    }
 }

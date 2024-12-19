@@ -3,6 +3,7 @@ package org.poo.associated.bankingCommands;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
+import org.poo.associated.bankingCommands.commandUtilities.StaticOutputs;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.transactionRelated.SplitPaymentError;
 import org.poo.associated.transactionRelated.SplitPaymentTransaction;
@@ -34,6 +35,7 @@ public final class SplitPaymentCommand implements BankingCommand {
                     String rateKey = account.getCurrency() + "-" + commandInput.getCurrency();
                     Double rate = SimpleRateMapConverter.getRatesMap().get(rateKey);
                     double requiredAmountInAccountCurrency = splitAmount / rate;
+
                     return account.getBalance() < requiredAmountInAccountCurrency;
                 })
                 .findFirst()
@@ -44,9 +46,7 @@ public final class SplitPaymentCommand implements BankingCommand {
                 List<Transaction> transactionArray = bank.getUserTransactionsDatabase()
                         .get(account.getBelongsToEmail());
 
-                String description = "Split payment of "
-                        + String.format("%.2f", commandInput.getAmount())
-                        + " " + commandInput.getCurrency();
+                String description = StaticOutputs.createDescription(commandInput);
 
                 Transaction transaction = new SplitPaymentError(commandInput.getTimestamp(),
                         description, commandInput.getCurrency(), splitAmount,
@@ -68,9 +68,7 @@ public final class SplitPaymentCommand implements BankingCommand {
             List<Transaction> transactionArray = bank.getUserTransactionsDatabase()
                     .get(account.getBelongsToEmail());
 
-            String description = "Split payment of "
-                    + String.format("%.2f", commandInput.getAmount())
-                    + " " + commandInput.getCurrency();
+            String description = StaticOutputs.createDescription(commandInput);
 
             Transaction transaction = new SplitPaymentTransaction(commandInput.getTimestamp(),
                     description, commandInput.getCurrency(), splitAmount,
