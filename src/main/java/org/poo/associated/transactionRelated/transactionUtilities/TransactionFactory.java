@@ -1,25 +1,42 @@
 package org.poo.associated.transactionRelated.transactionUtilities;
 
 import org.poo.associated.transactionRelated.AccountCreatedTransaction;
-import org.poo.fileio.CommandInput;
+import org.poo.associated.transactionRelated.AccountDeletedFundsError;
+import org.poo.associated.transactionRelated.CardDeletedTransaction;
+import org.poo.associated.transactionRelated.CardFrozenError;
+import org.poo.associated.transactionRelated.InsufficientFundsError;
+import org.poo.associated.transactionRelated.NewInterestRateTransaction;
+import org.poo.associated.transactionRelated.MinimumBalanceWarning;
+import org.poo.associated.transactionRelated.NewCardTransaction;
+import org.poo.associated.transactionRelated.PayOnlineTransaction;
+import org.poo.associated.transactionRelated.SendMoneyTransaction;
+import org.poo.associated.transactionRelated.SplitPaymentError;
+import org.poo.associated.transactionRelated.SplitPaymentTransaction;
 
 public final class TransactionFactory {
     private TransactionFactory() { }
 
-    public static Transaction createTransaction(String transaction, TransactionData transactionData) {
+    /**
+     * Metoda apelata pentru a instantia o tranzactie.
+     * @param transaction reprezinta numele tranzactiei.
+     * @param transactionData incapsuleaza toate datele necesare.
+     * @return tranzactie dorita.
+     */
+    public static Transaction createTransaction(final String transaction,
+                                                final TransactionData transactionData) {
         return switch (transaction) {
-            case "AccountCreatedTransaction"-> new AccountCreatedTransaction(transactionData.getTimestamp());
-            case "AccountDeletedFundsError" -> null;
-            case "CardDeletedTransaction" -> null;
-            case "CardFrozenError" -> null;
-            case "InsufficientFundsError" -> null;
-            case "InterestRateChangeTransaction" -> null;
-            case "MinimumBalanceWarning" -> null;
-            case "NewCardTransaction" -> null;
-            case "PayOnlineTransaction" -> null;
-            case "SendMoneyTransaction" -> null;
-            case "SplitPaymentTransaction" -> null;
-            case "SplitPaymentError" -> null;
+            case "AccountCreatedTransaction" -> new AccountCreatedTransaction(transactionData);
+            case "AccountDeletedFundsError" -> new AccountDeletedFundsError(transactionData);
+            case "CardDeletedTransaction" -> new CardDeletedTransaction(transactionData);
+            case "CardFrozenError" -> new CardFrozenError(transactionData);
+            case "InsufficientFundsError" -> new InsufficientFundsError(transactionData);
+            case "NewInterestRateTransaction" -> new NewInterestRateTransaction(transactionData);
+            case "MinimumBalanceWarning" -> new MinimumBalanceWarning(transactionData);
+            case "NewCardTransaction" -> new NewCardTransaction(transactionData);
+            case "PayOnlineTransaction" -> new PayOnlineTransaction(transactionData);
+            case "SendMoneyTransaction" -> new SendMoneyTransaction(transactionData);
+            case "SplitPaymentTransaction" -> new SplitPaymentTransaction(transactionData);
+            case "SplitPaymentError" -> new SplitPaymentError(transactionData);
             default -> throw new IllegalStateException("Unexpected input: " + transaction);
         };
     }

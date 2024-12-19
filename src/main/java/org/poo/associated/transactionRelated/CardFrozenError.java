@@ -2,6 +2,7 @@ package org.poo.associated.transactionRelated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
 
 /**
  * Aceasta clasa se instantiaza atunci cand se incearca plata cu un card
@@ -11,8 +12,8 @@ public final class CardFrozenError extends Transaction {
     @JsonProperty("description")
     private String description;
 
-    public CardFrozenError(final Integer timestamp) {
-        super(timestamp);
+    public CardFrozenError(final TransactionData transactionData) {
+        super(transactionData.getTimestamp());
         description = "The card is frozen";
     }
 }

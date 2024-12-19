@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
 import org.poo.associated.bankingCommands.commandUtilities.StaticOutputs;
-import org.poo.associated.transactionRelated.AccountDeletedFundsError;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionFactory;
 import org.poo.fileio.CommandInput;
 
 /**
@@ -28,8 +29,12 @@ public final class DeleteAccountCommand implements BankingCommand {
                     );
 
                     if (!removed) {
-                        Transaction transaction =
-                                new AccountDeletedFundsError(commandInput.getTimestamp());
+                        TransactionData transactionData = TransactionData.builder()
+                                .timestamp(commandInput.getTimestamp())
+                                .build();
+                        Transaction transaction = TransactionFactory
+                                .createTransaction("AccountDeletedFundsError", transactionData);
+
                         bank.getUserTransactionsDatabase()
                                 .get(commandInput.getEmail()).add(transaction);
                     }

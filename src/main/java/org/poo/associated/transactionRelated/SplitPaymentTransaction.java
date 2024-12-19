@@ -2,6 +2,8 @@ package org.poo.associated.transactionRelated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
+
 import java.util.List;
 
 /**
@@ -18,15 +20,11 @@ public class SplitPaymentTransaction extends Transaction {
     @JsonProperty("involvedAccounts")
     private List<String> involvedAccounts;
 
-    public SplitPaymentTransaction(final Integer timestamp,
-                                   final String description,
-                                   final String currency,
-                                   final double amount,
-                                   final List<String> involvedAccounts) {
-        super(timestamp);
-        this.description = description;
-        this.currency = currency;
-        this.amount = amount;
-        this.involvedAccounts = involvedAccounts;
+    public SplitPaymentTransaction(final TransactionData transactionData) {
+        super(transactionData.getTimestamp());
+        this.description = transactionData.getDescription();
+        this.currency = transactionData.getCurrency();
+        this.amount = transactionData.getAmount();
+        this.involvedAccounts = transactionData.getInvolvedAccounts();
     }
 }

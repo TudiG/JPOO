@@ -2,6 +2,7 @@ package org.poo.associated.transactionRelated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
 
 /**
  * Aceasta clasa este instantiata atunci cand este adaugat un card unui cont,
@@ -19,14 +20,11 @@ public final class NewCardTransaction extends Transaction {
     @JsonProperty("account")
     private String account;
 
-    public NewCardTransaction(final Integer timestamp,
-                              final String card,
-                              final String cardHolder,
-                              final String account) {
-        super(timestamp);
+    public NewCardTransaction(final TransactionData transactionData) {
+        super(transactionData.getTimestamp());
         this.description = "New card created";
-        this.card = card;
-        this.cardHolder = cardHolder;
-        this.account = account;
+        this.card = transactionData.getCardNumber();
+        this.cardHolder = transactionData.getEmail();
+        this.account = transactionData.getAccount();
     }
 }

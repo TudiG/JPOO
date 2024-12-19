@@ -1,8 +1,7 @@
 package org.poo.associated.transactionRelated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
 
 /**
  * Aceasta clasa se instantiaza cand se constanta ca unul dintre conturi
@@ -14,13 +13,9 @@ public final class SplitPaymentError extends SplitPaymentTransaction {
     @JsonProperty("error")
     private String error;
 
-    public SplitPaymentError(final Integer timestamp,
-                             final String description,
-                             final String currency,
-                             final double amount,
-                             final List<String> involvedAccounts,
-                             final String failedAccount) {
-        super(timestamp, description, currency, amount, involvedAccounts);
-        this.error = "Account " + failedAccount + " has insufficient funds for a split payment.";
+    public SplitPaymentError(final TransactionData transactionData) {
+        super(transactionData);
+        this.error = "Account " + transactionData.getAccount()
+                + " has insufficient funds for a split payment.";
     }
 }

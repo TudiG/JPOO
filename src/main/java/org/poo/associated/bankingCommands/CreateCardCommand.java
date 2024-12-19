@@ -3,8 +3,9 @@ package org.poo.associated.bankingCommands;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
-import org.poo.associated.transactionRelated.NewCardTransaction;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionFactory;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.Utils;
 
@@ -29,8 +30,15 @@ public final class CreateCardCommand implements BankingCommand {
         bank.addCardToAccount(commandInput.getEmail(), commandInput.getAccount(),
                 cardNumber, false);
 
-        Transaction transaction = new NewCardTransaction(commandInput.getTimestamp(),
-                cardNumber, commandInput.getEmail(), commandInput.getAccount());
+        TransactionData transactionData = TransactionData.builder()
+                .timestamp(commandInput.getTimestamp())
+                .cardNumber(cardNumber)
+                .email(commandInput.getEmail())
+                .account(commandInput.getAccount())
+                .build();
+
+        Transaction transaction = TransactionFactory
+                .createTransaction("NewCardTransaction", transactionData);
 
         bank.getUserTransactionsDatabase().get(commandInput.getEmail()).add(transaction);
         bank.findAccountByCardNumber(cardNumber).getAccountTransactions().add(transaction);

@@ -7,7 +7,6 @@ import org.poo.associated.transactionRelated.transactionUtilities.TransactionDat
 import org.poo.associated.transactionRelated.transactionUtilities.TransactionFactory;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.accounts.accountUtilities.AccountFactory;
-import org.poo.associated.transactionRelated.AccountCreatedTransaction;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 
@@ -28,11 +27,10 @@ public final class AddAccountCommand implements BankingCommand {
                 .filter(user -> commandInput.getEmail().equals(user.getEmail()))
                 .forEach(user -> user.getAccounts().add(account));
 
-//        Transaction transaction = new AccountCreatedTransaction(commandInput.getTimestamp());
-
         TransactionData transactionData = TransactionData.builder()
                 .timestamp(commandInput.getTimestamp())
                 .build();
+
         Transaction transaction = TransactionFactory
                 .createTransaction("AccountCreatedTransaction", transactionData);
 

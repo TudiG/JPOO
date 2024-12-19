@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
 import org.poo.associated.bankingCommands.commandUtilities.StaticOutputs;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionFactory;
 import org.poo.associated.userRelated.accounts.SavingsAccount;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
-import org.poo.associated.transactionRelated.InterestRateChangeTransaction;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 
@@ -29,8 +30,13 @@ public final class ChangeInterestRateCommand implements BankingCommand {
             SavingsAccount savingsAccount = (SavingsAccount) account;
             savingsAccount.updateInterestRate(commandInput.getInterestRate());
 
-            Transaction transaction = new InterestRateChangeTransaction(commandInput.getTimestamp(),
-                    commandInput.getInterestRate());
+            TransactionData transactionData = TransactionData.builder()
+                    .timestamp(commandInput.getTimestamp())
+                    .interestRate(commandInput.getInterestRate())
+                    .build();
+
+            Transaction transaction = TransactionFactory
+                    .createTransaction("NewInterestRateTransaction", transactionData);
 
             bank.getUserTransactionsDatabase().get(account.getBelongsToEmail()).add(transaction);
             savingsAccount.getAccountTransactions().add(transaction);

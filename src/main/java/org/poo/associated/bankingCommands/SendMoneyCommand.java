@@ -3,9 +3,9 @@ package org.poo.associated.bankingCommands;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionFactory;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
-import org.poo.associated.transactionRelated.InsufficientFundsError;
-import org.poo.associated.transactionRelated.SendMoneyTransaction;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
@@ -26,6 +26,7 @@ public final class SendMoneyCommand implements BankingCommand {
 
         Transaction transactionSender = null;
         Transaction transactionReceiver = null;
+        TransactionData transactionData = null;
 
         if (Utils.isValidIBAN(commandInput.getReceiver())
                 && Utils.isValidIBAN(commandInput.getAccount())) {
@@ -37,7 +38,13 @@ public final class SendMoneyCommand implements BankingCommand {
             }
 
             if (sender.getBalance() < commandInput.getAmount()) {
-                transactionSender = new InsufficientFundsError(commandInput.getTimestamp());
+                transactionData = TransactionData.builder()
+                        .timestamp(commandInput.getTimestamp())
+                        .build();
+
+                transactionSender = TransactionFactory
+                        .createTransaction("InsufficientFundsError", transactionData);
+
                 transactionsArray.add(transactionSender);
                 sender.getAccountTransactions().add(transactionSender);
                 return;
@@ -51,14 +58,22 @@ public final class SendMoneyCommand implements BankingCommand {
             receiver.addFunds(convertedAmount);
 
             String senderAmount = commandInput.getAmount() + " " + sender.getCurrency();
-            transactionSender = new SendMoneyTransaction(commandInput.getTimestamp(),
-                    commandInput.getDescription(), sender.getIban(), receiver.getIban(),
-                    senderAmount, "sent");
+            transactionData = TransactionData.builder()
+                    .timestamp(commandInput.getTimestamp())
+                    .description(commandInput.getDescription())
+                    .senderIban(sender.getIban())
+                    .receiverIban(receiver.getIban())
+                    .sendMoneyAmount(senderAmount)
+                    .transferType("sent")
+                    .build();
+            transactionSender = TransactionFactory
+                    .createTransaction("SendMoneyTransaction", transactionData);
 
             String receiverAmount = convertedAmount + " " + receiver.getCurrency();
-            transactionReceiver = new SendMoneyTransaction(commandInput.getTimestamp(),
-                    commandInput.getDescription(), sender.getIban(), receiver.getIban(),
-                    receiverAmount, "received");
+            transactionData.setSendMoneyAmount(receiverAmount);
+            transactionData.setTransferType("received");
+            transactionReceiver = TransactionFactory
+                    .createTransaction("SendMoneyTransaction", transactionData);
 
             bank.getUserTransactionsDatabase()
                     .get(sender.getBelongsToEmail()).add(transactionSender);

@@ -2,6 +2,7 @@ package org.poo.associated.transactionRelated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
 
 /**
  * Aceasta clasa este instantiata cand un card este
@@ -18,14 +19,11 @@ public final class CardDeletedTransaction extends Transaction {
     @JsonProperty("account")
     private String account;
 
-    public CardDeletedTransaction(final Integer timestamp,
-                                  final String card,
-                                  final String cardHolder,
-                                  final String account) {
-        super(timestamp);
+    public CardDeletedTransaction(final TransactionData transactionData) {
+        super(transactionData.getTimestamp());
         this.description = "The card has been destroyed";
-        this.card = card;
-        this.cardHolder = cardHolder;
-        this.account = account;
+        this.card = transactionData.getCardNumber();
+        this.cardHolder = transactionData.getEmail();
+        this.account = transactionData.getAccount();
     }
 }

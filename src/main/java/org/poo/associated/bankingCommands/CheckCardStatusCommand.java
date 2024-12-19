@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
 import org.poo.associated.bankingCommands.commandUtilities.StaticOutputs;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionFactory;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.card.Card;
-import org.poo.associated.transactionRelated.MinimumBalanceWarning;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.associated.userRelated.user.User;
 import org.poo.fileio.CommandInput;
@@ -40,7 +41,12 @@ public final class CheckCardStatusCommand implements BankingCommand {
         if (account.getMinimumBalance() >= account.getBalance()) {
             card.setStatus("frozen");
 
-            Transaction transaction = new MinimumBalanceWarning(commandInput.getTimestamp());
+            TransactionData transactionData = TransactionData.builder()
+                    .timestamp(commandInput.getTimestamp())
+                    .build();
+
+            Transaction transaction = TransactionFactory
+                    .createTransaction("MinimumBalanceWarning", transactionData);
 
             transactionArray.add(transaction);
             account.getAccountTransactions().add(transaction);

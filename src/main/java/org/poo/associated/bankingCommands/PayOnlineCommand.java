@@ -4,14 +4,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
 import org.poo.associated.bankingCommands.commandUtilities.StaticOutputs;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionFactory;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.card.Card;
-import org.poo.associated.transactionRelated.CardDeletedTransaction;
-import org.poo.associated.transactionRelated.CardFrozenError;
 import org.poo.associated.transactionRelated.commerciantReport.CommerciantReport;
-import org.poo.associated.transactionRelated.InsufficientFundsError;
-import org.poo.associated.transactionRelated.NewCardTransaction;
-import org.poo.associated.transactionRelated.PayOnlineTransaction;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
@@ -36,10 +33,17 @@ public final class PayOnlineCommand implements BankingCommand {
         Account account = bank.findAccountByCardNumber(card.getCardNumber());
         List<Transaction> transactionsArray = bank.getUserTransactionsDatabase()
                 .get(account.getBelongsToEmail());
+
         Transaction transaction = null;
+        TransactionData transactionData = null;
 
         if (bank.findCardByNumber(card.getCardNumber()).getStatus().equals("frozen")) {
-            transaction = new CardFrozenError(commandInput.getTimestamp());
+            transactionData = TransactionData.builder()
+                    .timestamp(commandInput.getTimestamp())
+                    .build();
+
+            transaction = TransactionFactory
+                    .createTransaction("CardFrozenError", transactionData);
 
             transactionsArray.add(transaction);
             account.getAccountTransactions().add(transaction);
@@ -51,7 +55,12 @@ public final class PayOnlineCommand implements BankingCommand {
         double convertedAmount = rate * commandInput.getAmount();
 
         if (account.getBalance() < convertedAmount) {
-            transaction = new InsufficientFundsError(commandInput.getTimestamp());
+            transactionData = TransactionData.builder()
+                    .timestamp(commandInput.getTimestamp())
+                    .build();
+
+            transaction = TransactionFactory
+                    .createTransaction("InsufficientFundsError", transactionData);
 
             transactionsArray.add(transaction);
             account.getAccountTransactions().add(transaction);
@@ -60,8 +69,15 @@ public final class PayOnlineCommand implements BankingCommand {
 
         account.subtractFunds(convertedAmount);
 
-        transaction = new PayOnlineTransaction(commandInput.getTimestamp(),
-                convertedAmount, commandInput.getCommerciant());
+        transactionData = TransactionData.builder()
+                .timestamp(commandInput.getTimestamp())
+                .amount(convertedAmount)
+                .commerciant(commandInput.getCommerciant())
+                .build();
+
+        transaction = TransactionFactory
+                .createTransaction("PayOnlineTransaction", transactionData);
+
         CommerciantReport commerciantReport = new CommerciantReport(commandInput.getTimestamp(),
                 convertedAmount, commandInput.getCommerciant(), transaction);
 
@@ -70,14 +86,25 @@ public final class PayOnlineCommand implements BankingCommand {
         account.getCommerciantInteractions().add(commerciantReport);
 
         if (card.isOneTimeCard()) {
-            transaction = new CardDeletedTransaction(commandInput.getTimestamp(),
-                    card.getCardNumber(), account.getBelongsToEmail(), account.getIban());
+            transactionData = TransactionData.builder()
+                    .timestamp(commandInput.getTimestamp())
+                    .cardNumber(card.getCardNumber())
+                    .email(account.getBelongsToEmail())
+                    .account(account.getIban())
+                    .build();
+
+            transaction = TransactionFactory
+                    .createTransaction("CardDeletedTransaction", transactionData);
+
             transactionsArray.add(transaction);
 
             card.setCardNumber(Utils.generateCardNumber());
 
-            transaction = new NewCardTransaction(commandInput.getTimestamp(),
-                    card.getCardNumber(), account.getBelongsToEmail(), account.getIban());
+            transactionData.setCardNumber(card.getCardNumber());
+
+            transaction = TransactionFactory
+                    .createTransaction("NewCardTransaction", transactionData);
+
             transactionsArray.add(transaction);
         }
     }

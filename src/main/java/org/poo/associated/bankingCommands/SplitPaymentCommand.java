@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
 import org.poo.associated.bankingCommands.commandUtilities.StaticOutputs;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionData;
+import org.poo.associated.transactionRelated.transactionUtilities.TransactionFactory;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
-import org.poo.associated.transactionRelated.SplitPaymentError;
-import org.poo.associated.transactionRelated.SplitPaymentTransaction;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
@@ -48,9 +48,17 @@ public final class SplitPaymentCommand implements BankingCommand {
 
                 String description = StaticOutputs.createDescription(commandInput);
 
-                Transaction transaction = new SplitPaymentError(commandInput.getTimestamp(),
-                        description, commandInput.getCurrency(), splitAmount,
-                        commandInput.getAccounts(), failedAccount.getIban());
+                TransactionData transactionData = TransactionData.builder()
+                        .timestamp(commandInput.getTimestamp())
+                        .description(description)
+                        .currency(commandInput.getCurrency())
+                        .amount(splitAmount)
+                        .involvedAccounts(commandInput.getAccounts())
+                        .account(failedAccount.getIban())
+                        .build();
+
+                Transaction transaction = TransactionFactory
+                        .createTransaction("SplitPaymentError", transactionData);
 
                 transactionArray.add(transaction);
                 account.getAccountTransactions().add(transaction);
@@ -70,9 +78,16 @@ public final class SplitPaymentCommand implements BankingCommand {
 
             String description = StaticOutputs.createDescription(commandInput);
 
-            Transaction transaction = new SplitPaymentTransaction(commandInput.getTimestamp(),
-                    description, commandInput.getCurrency(), splitAmount,
-                    commandInput.getAccounts());
+            TransactionData transactionData = TransactionData.builder()
+                    .timestamp(commandInput.getTimestamp())
+                    .description(description)
+                    .currency(commandInput.getCurrency())
+                    .amount(splitAmount)
+                    .involvedAccounts(commandInput.getAccounts())
+                    .build();
+
+            Transaction transaction = TransactionFactory
+                    .createTransaction("SplitPaymentTransaction", transactionData);
 
             transactionArray.add(transaction);
             account.getAccountTransactions().add(transaction);
