@@ -40,36 +40,35 @@ Gavriliu Tudor Paul - 322CD
 ## Descrierea Modului de functionare
 
 Codul incepe rularea unui test in BankInitializer:
-- Sunt adaugati toti utilizatorii in banca prin intermediul unei clase utilitare. 
+- Sunt adaugati toti utilizatorii in instanta unica a bancii prin intermediul unei clase utilitare. 
 - Sunt calculate toate ratele folosite in cadrul unui test in clasa SimpleRateMapConverter
 - Incepe executarea comenzilor prin CommandService.
 - Dupa executarea tuturor comenzilor date la intrare, sunt curatate toate datele utilizate in cadrul testului curent.
 
 Clasa CommandService are un camp numit bankingCommands care este reprezentat sub forma unui Map,
-astfel se retin toate comenzile date in timpul rularii. Prin metoda execute() sunt executate comenzile
+astfel se retin toate comenzile care vor fi date in timpul rularii. Prin metoda execute() sunt executate comenzile
 propriu-zise.
 
 Atunci cand se efectueaza orice fel de tranzactie, are loc acest proces:
-- sunt salvate datele specifice tranzactiei printr-o instanta a clasei TransactionData (construita cu Builder).
-- instanta TransactionDate este trimisa catre TransactionFactory.
-- este instantiat, cu datele din instanta TransactionData, si returnat obiectul corespunzator tranzactiei efectuate.
+- Sunt salvate datele specifice tranzactiei printr-o instanta a clasei TransactionData (construita cu Builder).
+- Instanta TransactionData este trimisa catre TransactionFactory.
+- Este instantiat, cu datele din instanta TransactionData, si returnat obiectul corespunzator tranzactiei efectuate.
 
 Aceste tranzactii sunt apoi salvate in:
-1. In Map-ul din banca, fiind adaugate in lista corespunzatoare email-ului utilizatorului.
-2. Lista de tranzactii din contul care a fost folosit pentru tranzactie.
-3. In cazul in care tranzactie este rezultat din comanda PayOnline, aceasta va fi retinuta intr-un
-obiect de tipul CommerciantReport.
+1. Map-ul din banca, fiind adaugate in lista corespunzatoare email-ului utilizatorului.
+2. Lista de tranzactii din contul care a fost folosit pentru efectuarea tranzactiei.
+3. Lista de obiecte de tipul CommerciantReport, prin intermediul unui obiect de tipul CommerciantReport, 
+dar doar in cazul in care tranzactia este rezultatul unei plati cu cadrul
 
-Am sa descriu modul in care am implementat comenziile de afisare si diferenta
-intre lista de tranzactii si lista de CommerciantReport:
+Am sa descriu modul in care am implementat comenziile de afisare:
 1. Pentru comanda PrintTranzactions:
-   - am ales sa retin toate tranzactiile unui utilizator intr-un Map (cheie = email, value = Lista de tranzactii),
+   - Am ales sa retin toate tranzactiile unui utilizator intr-un Map (cheie = email, value = Lista de tranzactii),
    stocat in instanta unica a banci, urmand ca toate acestea sa fie printate la apelarea comenzii.
 2. Pentru comanda Report:
-    - am ales sa retin toate tranzactiile unui utilizator facute cu un anumit cont in acelasi cont,
+    - Am ales sa retin toate tranzactiile unui utilizator facute cu un anumit cont in acelasi cont,
    urmand sa filtrez si sa printez la output tranzactiile din intervalul dorit.
 3. Pentru comanda SpedingReport:
-    - am ales sa retin intr-o lista de tipul CommerciantReport doar tranzactiile ale unui utilizator,
+    - Am ales sa retin intr-o lista de tipul CommerciantReport doar tranzactiile ale unui utilizator,
    facute cu un card, in contul asociat cardului care a efectuat plata, urmand sa filtrez si sa printez la
    output comerciantii si tranzactiile cu cardul din intervalul dorit. 
 
