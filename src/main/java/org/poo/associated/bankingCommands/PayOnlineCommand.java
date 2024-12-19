@@ -1,10 +1,9 @@
 package org.poo.associated.bankingCommands;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
-import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
+import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
+import org.poo.associated.bankingCommands.commandUtilities.StaticOutputs;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.card.Card;
 import org.poo.associated.transactionRelated.CardDeletedTransaction;
@@ -17,7 +16,6 @@ import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.SimpleRateMapConverter;
 import org.poo.utils.Utils;
-
 import java.util.List;
 
 /**
@@ -32,70 +30,61 @@ public final class PayOnlineCommand implements BankingCommand {
 
         List<Transaction> transactionsArray = bank.getUserTransactionsDatabase()
                 .get(commandInput.getEmail());
+
         Transaction transaction = null;
 
-        if (account != null) {
-            String rateKey = commandInput.getCurrency() + "-" + account.getCurrency();
-            double rate = SimpleRateMapConverter.getRatesMap().get(rateKey);
-            double convertedAmount = rate * commandInput.getAmount();
+        if (account == null) {
+            StaticOutputs.notFound(commandInput, Utils.CARD_NOT_FOUND, output);
+            return;
+        }
 
-            if (!bank.findUserByCardNumber(commandInput.getCardNumber()).getEmail()
-                    .equals(commandInput.getEmail())) {
-                return;
-            }
+        String rateKey = commandInput.getCurrency() + "-" + account.getCurrency();
+        double rate = SimpleRateMapConverter.getRatesMap().get(rateKey);
+        double convertedAmount = rate * commandInput.getAmount();
 
-            if (bank.findCardByNumber(commandInput.getCardNumber()).getStatus().equals("frozen")) {
-                transaction = new CardFrozenError(commandInput.getTimestamp());
-                transactionsArray.add(transaction);
-                account.getAccountTransactions().add(transaction);
-                return;
-            }
+        if (!bank.findUserByCardNumber(commandInput.getCardNumber()).getEmail()
+                .equals(commandInput.getEmail())) {
+            return;
+        }
 
-            if (account.getBalance() < convertedAmount) {
-                transaction = new InsufficientFundsError(commandInput.getTimestamp());
-                transactionsArray.add(transaction);
-                account.getAccountTransactions().add(transaction);
-                return;
-            }
-
-            account.subtractFunds(convertedAmount);
-
-            transaction = new PayOnlineTransaction(commandInput.getTimestamp(),
-                    convertedAmount, commandInput.getCommerciant());
-
-            CommerciantReport commerciant = new CommerciantReport(commandInput.getTimestamp(),
-                    convertedAmount, commandInput.getCommerciant(), transaction);
+        if (bank.findCardByNumber(commandInput.getCardNumber()).getStatus().equals("frozen")) {
+            transaction = new CardFrozenError(commandInput.getTimestamp());
 
             transactionsArray.add(transaction);
             account.getAccountTransactions().add(transaction);
-            account.getCommerciantInteractions().add(commerciant);
+            return;
+        }
 
-            Card card = bank.findCardByNumber(commandInput.getCardNumber());
-            if (card.isOneTimeCard()) {
-                transaction = new CardDeletedTransaction(commandInput.getTimestamp(),
-                        card.getCardNumber(), commandInput.getEmail(), account.getIban());
-                transactionsArray.add(transaction);
+        if (account.getBalance() < convertedAmount) {
+            transaction = new InsufficientFundsError(commandInput.getTimestamp());
 
-                card.setCardNumber(Utils.generateCardNumber());
+            transactionsArray.add(transaction);
+            account.getAccountTransactions().add(transaction);
+            return;
+        }
 
-                transaction = new NewCardTransaction(commandInput.getTimestamp(),
-                        card.getCardNumber(), commandInput.getEmail(), account.getIban());
-                transactionsArray.add(transaction);
-            }
-        } else {
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectNode fieldNode = mapper.createObjectNode();
-            ObjectNode outputNode = mapper.createObjectNode();
+        account.subtractFunds(convertedAmount);
 
-            fieldNode.put("command", commandInput.getCommand());
+        transaction = new PayOnlineTransaction(commandInput.getTimestamp(),
+                convertedAmount, commandInput.getCommerciant());
+        CommerciantReport commerciantReport = new CommerciantReport(commandInput.getTimestamp(),
+                convertedAmount, commandInput.getCommerciant(), transaction);
 
-            outputNode.put("description", "Card not found");
-            outputNode.put("timestamp", commandInput.getTimestamp());
+        transactionsArray.add(transaction);
+        account.getAccountTransactions().add(transaction);
+        account.getCommerciantInteractions().add(commerciantReport);
 
-            fieldNode.set("output", outputNode);
-            fieldNode.put("timestamp", commandInput.getTimestamp());
+        Card card = bank.findCardByNumber(commandInput.getCardNumber());
+        if (card.isOneTimeCard()) {
+            transaction = new CardDeletedTransaction(commandInput.getTimestamp(),
+                    card.getCardNumber(), commandInput.getEmail(), account.getIban());
+            transactionsArray.add(transaction);
 
-            output.add(fieldNode);
+            card.setCardNumber(Utils.generateCardNumber());
+
+            transaction = new NewCardTransaction(commandInput.getTimestamp(),
+                    card.getCardNumber(), commandInput.getEmail(), account.getIban());
+            transactionsArray.add(transaction);
         }
     }
 }

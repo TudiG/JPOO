@@ -7,6 +7,9 @@ public final class Utils {
         // Checkstyle error free constructor
     }
 
+    public static final String CARD_NOT_FOUND = "Card not found";
+    public static final String ACCOUNT_NOT_FOUND = "Account not found";
+
     private static final int IBAN_SEED = 1;
     private static final int CARD_SEED = 2;
     private static final int DIGIT_BOUND = 10;

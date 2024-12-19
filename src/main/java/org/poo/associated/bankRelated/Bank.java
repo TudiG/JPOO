@@ -3,7 +3,6 @@ package org.poo.associated.bankRelated;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import lombok.Getter;
 import org.poo.associated.userRelated.card.Card;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
@@ -46,6 +45,44 @@ public final class Bank {
      */
     public void addAllUsers(final List<User> collectedUsers) {
         this.users = collectedUsers;
+    }
+
+    /**
+     * Metod care cauta contul unui user pe baza unui email si al unui
+     * IBAN dat la intrare pentru a adauga un card.
+     *
+     * @param email email-ul user-ului care adauga un card
+     * @param iban iban-ul contului in care se adauga cardul
+     * @param cardNumber numarul noului cardul generat
+     * @param isOneTimeCard boolean-ul care determina tipul cardului
+     */
+    public void addCardToAccount(final String email, final String iban,
+                                 final String cardNumber, final boolean isOneTimeCard) {
+        users.stream()
+                .filter(user -> email.equalsIgnoreCase(user.getEmail()))
+                .findAny()
+                .ifPresent(selectedUser -> selectedUser.getAccounts().stream()
+                        .filter(account -> iban.equals(account.getIban()))
+                        .forEach(account -> account.getCards()
+                                .add(new Card(cardNumber, isOneTimeCard))));
+    }
+
+    /**
+     * Metod care cauta contul unui user pe baza unui email si al unui
+     * IBAN dat la intrare pentru a sterge un card.
+     *
+     * @param email email-ul user-ului care sterge un card
+     * @param cardNumber numarul cardului care trebui sters
+     */
+    public void deleteCardFromAccount(final String email, final String cardNumber) {
+        users.stream()
+                .filter(user -> email.equalsIgnoreCase(user.getEmail()))
+                .findAny()
+                .ifPresent(selectedUser -> selectedUser.getAccounts()
+                        .forEach(account -> account.getCards()
+                                .removeIf(card -> cardNumber.equals(card.getCardNumber()))
+                        )
+                );
     }
 
     /**

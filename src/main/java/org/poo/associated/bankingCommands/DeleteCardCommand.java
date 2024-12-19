@@ -2,7 +2,7 @@ package org.poo.associated.bankingCommands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
-import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
+import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.transactionRelated.CardDeletedTransaction;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
@@ -23,15 +23,7 @@ public final class DeleteCardCommand implements BankingCommand {
             return;
         }
 
-        bank.getUsers().stream()
-                .filter(user -> commandInput.getEmail().equalsIgnoreCase(user.getEmail()))
-                .findAny()
-                .ifPresent(selectedUser -> selectedUser.getAccounts()
-                        .forEach(account -> account.getCards()
-                                .removeIf(card -> commandInput.getCardNumber()
-                                        .equals(card.getCardNumber()))
-                        )
-                );
+        bank.deleteCardFromAccount(commandInput.getEmail(), commandInput.getCardNumber());
 
         Transaction transaction = new CardDeletedTransaction(commandInput.getTimestamp(),
                 commandInput.getCardNumber(), commandInput.getEmail(),

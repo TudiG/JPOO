@@ -1,10 +1,9 @@
 package org.poo.associated.bankingCommands;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
-import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
+import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
+import org.poo.associated.bankingCommands.commandUtilities.StaticOutputs;
 import org.poo.associated.userRelated.accounts.SavingsAccount;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.transactionRelated.InterestRateChangeTransaction;
@@ -36,19 +35,7 @@ public final class ChangeInterestRateCommand implements BankingCommand {
             bank.getUserTransactionsDatabase().get(account.getBelongsToEmail()).add(transaction);
             bank.findAccountByIBAN(account.getIban()).getAccountTransactions().add(transaction);
         } else {
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectNode fieldNode = mapper.createObjectNode();
-            ObjectNode outputNode = mapper.createObjectNode();
-
-            fieldNode.put("command", commandInput.getCommand());
-
-            outputNode.put("description", "This is not a savings account");
-            outputNode.put("timestamp", commandInput.getTimestamp());
-
-            fieldNode.set("output", outputNode);
-            fieldNode.put("timestamp", commandInput.getTimestamp());
-
-            output.add(fieldNode);
+            StaticOutputs.isNotSavingsAccount(commandInput, output);
         }
     }
 }

@@ -2,7 +2,7 @@ package org.poo.associated.bankingCommands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.associated.bankRelated.Bank;
-import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
+import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.transactionRelated.InsufficientFundsError;
 import org.poo.associated.transactionRelated.SendMoneyTransaction;

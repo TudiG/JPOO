@@ -19,7 +19,7 @@ import org.poo.associated.bankingCommands.SetAliasCommand;
 import org.poo.associated.bankingCommands.SetMinimumBalanceCommand;
 import org.poo.associated.bankingCommands.SpendingsReportCommand;
 import org.poo.associated.bankingCommands.SplitPaymentCommand;
-import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
+import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
 import org.poo.fileio.CommandInput;
 
 import java.util.HashMap;

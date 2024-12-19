@@ -1,16 +1,16 @@
 package org.poo.associated.bankingCommands;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
-import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
+import org.poo.associated.bankingCommands.commandUtilities.BankingCommand;
+import org.poo.associated.bankingCommands.commandUtilities.StaticOutputs;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.card.Card;
 import org.poo.associated.transactionRelated.MinimumBalanceWarning;
 import org.poo.associated.transactionRelated.transactionUtilities.Transaction;
 import org.poo.associated.userRelated.user.User;
 import org.poo.fileio.CommandInput;
+import org.poo.utils.Utils;
 
 import java.util.List;
 
@@ -27,24 +27,11 @@ public final class CheckCardStatusCommand implements BankingCommand {
         Card card = bank.findCardByNumber(commandInput.getCardNumber());
 
         if (card == null) {
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectNode fieldNode = mapper.createObjectNode();
-            ObjectNode outputNode = mapper.createObjectNode();
-
-            fieldNode.put("command", commandInput.getCommand());
-
-            outputNode.put("description", "Card not found");
-            outputNode.put("timestamp", commandInput.getTimestamp());
-
-            fieldNode.set("output", outputNode);
-            fieldNode.put("timestamp", commandInput.getTimestamp());
-
-            output.add(fieldNode);
+            StaticOutputs.notFound(commandInput, Utils.CARD_NOT_FOUND, output);
             return;
         }
 
         Account account = bank.findAccountByCardNumber(card.getCardNumber());
-
         User user = bank.findUserByCardNumber(commandInput.getCardNumber());
 
         List<Transaction> transactionArray = bank.getUserTransactionsDatabase()
