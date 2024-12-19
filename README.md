@@ -85,4 +85,4 @@ Exceptie de la aceasta conventie fac:
 #### Command Design Pattern:
 1. src/associated/actionManager/commands/*
 
-<div align="center"><img src="https://media1.tenor.com/m/aNAxmoSej-MAAAAd/dead-yukari.gif" width="300px"></div>
+<div align="center"><img src="https://imgur.com/persevere-SeeLGeJ" width="300px"></div>
