@@ -6,17 +6,15 @@ import java.util.Map;
 
 import lombok.Getter;
 import org.poo.associated.userRelated.card.Card;
-import org.poo.associated.userRelated.transaction.Transaction;
+import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
 import org.poo.associated.userRelated.user.User;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 
 @Getter
 public final class Bank {
-    private List<User> users;
     private static Bank bankInstance;
+    private List<User> users;
     private Map<String, Alias> aliasDatabase;
-
-    // Se va folosi pentru noua implementare a tranzactiilor
     private Map<String, List<Transaction>> userTransactionsDatabase;
 
     private Bank() {
@@ -24,7 +22,11 @@ public final class Bank {
         userTransactionsDatabase = new HashMap<>();
     }
 
-    public synchronized static Bank getInstance() {
+    /**
+     *
+     * @return
+     */
+    public static synchronized Bank getInstance() {
         if (bankInstance == null) {
             bankInstance = new Bank();
         }
@@ -32,11 +34,20 @@ public final class Bank {
         return bankInstance;
     }
 
-    public void addAllUsers(final List<User> users) {
-        this.users = users;
+    /**
+     *
+     * @param collectedUsers
+     */
+    public void addAllUsers(final List<User> collectedUsers) {
+        this.users = collectedUsers;
     }
 
-    public User findUserByCardNumber(String cardNumber) {
+    /**
+     *
+     * @param cardNumber
+     * @return
+     */
+    public User findUserByCardNumber(final String cardNumber) {
         return users.stream()
                 .filter(user -> user.getAccounts().stream()
                         .flatMap(account -> account.getCards().stream())
@@ -45,14 +56,24 @@ public final class Bank {
                 .orElse(null);
     }
 
-    public Account findAccountByIBAN(String iban) {
+    /**
+     *
+     * @param iban
+     * @return
+     */
+    public Account findAccountByIBAN(final String iban) {
         return users.stream()
                 .flatMap(user -> user.getAccounts().stream())
-                .filter(account -> iban.equals(account.getIBAN()))
+                .filter(account -> iban.equals(account.getIban()))
                 .findFirst().orElse(null);
     }
 
-    public Account findAccountByCardNumber(String cardNumber) {
+    /**
+     *
+     * @param cardNumber
+     * @return
+     */
+    public Account findAccountByCardNumber(final String cardNumber) {
         return users.stream()
                 .flatMap(user -> user.getAccounts().stream())
                 .filter(account -> account.getCards().stream()
@@ -61,7 +82,12 @@ public final class Bank {
                 .orElse(null);
     }
 
-    public Card findCardByNumber(String cardNumber) {
+    /**
+     *
+     * @param cardNumber
+     * @return
+     */
+    public Card findCardByNumber(final String cardNumber) {
         return users.stream()
                 .flatMap(user -> user.getAccounts().stream())
                 .flatMap(account -> account.getCards().stream())

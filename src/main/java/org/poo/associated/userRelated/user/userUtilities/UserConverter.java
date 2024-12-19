@@ -7,6 +7,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public final class UserConverter {
+    private UserConverter() { }
+
+    /**
+     *
+     * @param userInputs
+     * @return
+     */
     public static List<User> convertUsersFromInput(final UserInput[] userInputs) {
         return Arrays.stream(userInputs).map(User::new).collect(Collectors.toList());
     }

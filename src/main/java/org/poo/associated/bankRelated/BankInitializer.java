@@ -17,7 +17,11 @@ public final class BankInitializer {
 
     }
 
-    public synchronized static BankInitializer getInstance() {
+    /**
+     *
+     * @return
+     */
+    public static synchronized BankInitializer getInstance() {
         if (instance == null) {
             instance = new BankInitializer();
         }
@@ -25,6 +29,11 @@ public final class BankInitializer {
         return instance;
     }
 
+    /**
+     *
+     * @param inputData
+     * @param output
+     */
     public void initialize(final ObjectInput inputData, final ArrayNode output) {
         clearAllData();
 
@@ -37,10 +46,13 @@ public final class BankInitializer {
         }
     }
 
+    /**
+     *
+     */
     private void clearAllData() {
         Utils.resetRandom();
 
-        SimpleRateMapConverter.ratesMap.clear();
+        SimpleRateMapConverter.getRatesMap().clear();
 
         Bank bank = Bank.getInstance();
         bank.getUserTransactionsDatabase().clear();

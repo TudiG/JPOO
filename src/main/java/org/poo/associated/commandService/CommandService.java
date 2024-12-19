@@ -1,9 +1,9 @@
 package org.poo.associated.commandService;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.AddAccountCommand;
 import org.poo.associated.bankingCommands.AddFundsCommand;
+import org.poo.associated.bankingCommands.AddInterestCommand;
 import org.poo.associated.bankingCommands.ChangeInterestRateCommand;
 import org.poo.associated.bankingCommands.CheckCardStatusCommand;
 import org.poo.associated.bankingCommands.CreateCardCommand;
@@ -46,8 +46,13 @@ public final class CommandService {
         bankingCommands.put("splitPayment", new SplitPaymentCommand());
         bankingCommands.put("report", new ReportCommand());
         bankingCommands.put("spendingsReport", new SpendingsReportCommand());
+        bankingCommands.put("addInterest", new AddInterestCommand());
     }
 
+    /**
+     *
+     * @return
+     */
     public static synchronized CommandService getInstance() {
         if (serviceInstance == null) {
             serviceInstance = new CommandService();
@@ -56,10 +61,15 @@ public final class CommandService {
         return serviceInstance;
     }
 
+    /**
+     *
+     * @param commandInput
+     * @param output
+     */
     public void executeCommands(final CommandInput commandInput, final ArrayNode output) {
         BankingCommand bankingCommand = bankingCommands.get(commandInput.getCommand());
 
-        if(bankingCommand != null) {
+        if (bankingCommand != null) {
             bankingCommand.execute(commandInput, output);
         }
     }

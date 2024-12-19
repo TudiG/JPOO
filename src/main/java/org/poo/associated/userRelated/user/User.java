@@ -15,7 +15,7 @@ public final class User {
     private String email;
     private List<Account> accounts;
 
-    public User(UserInput userInput) {
+    public User(final UserInput userInput) {
         firstName = userInput.getFirstName();
         lastName = userInput.getLastName();
         email = userInput.getEmail();

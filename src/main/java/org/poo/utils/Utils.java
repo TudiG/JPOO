@@ -58,7 +58,12 @@ public final class Utils {
         cardRandom = new Random(CARD_SEED);
     }
 
-    public static boolean isValidIBAN(String iban) {
+    /**
+     * Metoda verifica daca String-ul trimis este defapt un alias, sau un IBAN normal.
+     * @param iban String-ul primit la intrare
+     * @return true daca este un IBAN normal, altfel false in orice alt caz
+     */
+    public static boolean isValidIBAN(final String iban) {
         String ibanRegex = "^RO\\d{2}POOB\\d{16}$";
         return iban.matches(ibanRegex);
     }

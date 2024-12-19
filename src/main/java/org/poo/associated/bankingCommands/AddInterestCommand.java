@@ -7,29 +7,19 @@ import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.SavingsAccount;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
-import org.poo.associated.userRelated.transactions.InterestRateChangeTransaction;
-import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 
-public final class ChangeInterestRateCommand implements BankingCommand {
+public final class AddInterestCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
-        Bank bank = Bank.getInstance();
-        Account account = bank.findAccountByIBAN(commandInput.getAccount());
+        Account account = Bank.getInstance().findAccountByIBAN(commandInput.getAccount());
 
         if (account == null) {
             return;
         }
 
         if (account.getClass().equals(SavingsAccount.class)) {
-            SavingsAccount savingsAccount = (SavingsAccount) account;
-            savingsAccount.setInterestRate(commandInput.getInterestRate());
-
-            Transaction transaction = new InterestRateChangeTransaction(commandInput.getTimestamp(),
-                    commandInput.getInterestRate());
-
-            bank.getUserTransactionsDatabase().get(account.getBelongsToEmail()).add(transaction);
-            bank.findAccountByIBAN(account.getIban()).getAccountTransactions().add(transaction);
+            account.addFunds(account.getBalance() * ((SavingsAccount) account).getInterestRate());
         } else {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode fieldNode = mapper.createObjectNode();

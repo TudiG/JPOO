@@ -5,28 +5,41 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
+import org.poo.associated.userRelated.transactions.AccountDeletedFundsError;
+import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 
 public final class DeleteAccountCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
-        Bank.getInstance().getUsers().stream()
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode outputNode = mapper.createObjectNode();
+        ObjectNode fieldNode = mapper.createObjectNode();
+
+        Bank bank = Bank.getInstance();
+
+        bank.getUsers().stream()
                 .filter(user -> commandInput.getEmail().equals(user.getEmail()))
                 .findFirst()
                 .ifPresentOrElse(user -> {
-                    boolean removed = user.getAccounts().removeIf(account -> 
-                        commandInput.getAccount().equals(account.getIBAN()) && account.getBalance() == 0
+                    boolean removed = user.getAccounts().removeIf(account ->
+                        commandInput.getAccount()
+                                .equals(account.getIban()) && account.getBalance() == 0
                     );
 
-                    ObjectMapper mapper = new ObjectMapper();
+                    if (!removed) {
+                        Transaction transaction =
+                                new AccountDeletedFundsError(commandInput.getTimestamp());
+                        bank.getUserTransactionsDatabase()
+                                .get(commandInput.getEmail()).add(transaction);
+                    }
 
-                    ObjectNode fieldNode = mapper.createObjectNode();
                     fieldNode.put("command", commandInput.getCommand());
 
                     String operationResult =  removed ? "success" : "error";
-                    String operationMessage = removed ? "Account deleted" : "Account couldn't be deleted - see org.poo.transactions for details";
+                    String operationMessage = removed ? "Account deleted"
+                            : "Account couldn't be deleted - see org.poo.transactions for details";
 
-                    ObjectNode outputNode = mapper.createObjectNode();
                     outputNode.put(operationResult, operationMessage);
                     outputNode.put("timestamp", commandInput.getTimestamp());
 
@@ -35,7 +48,6 @@ public final class DeleteAccountCommand implements BankingCommand {
 
                     output.add(fieldNode);
                 }, () -> {
-                    // error
                 });
     }
 }

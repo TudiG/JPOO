@@ -1,8 +1,9 @@
-package org.poo.associated.userRelated.transaction;
+package org.poo.associated.userRelated.transactions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
 
-public class PayOnlineTransaction extends Transaction {
+public final class PayOnlineTransaction extends Transaction {
     @JsonProperty("description")
     private String description;
     @JsonProperty("amount")
@@ -10,7 +11,9 @@ public class PayOnlineTransaction extends Transaction {
     @JsonProperty("commerciant")
     private String commerciant;
 
-    public PayOnlineTransaction(Integer timestamp, double amount, String commerciant) {
+    public PayOnlineTransaction(final Integer timestamp,
+                                final double amount,
+                                final String commerciant) {
         super(timestamp);
         this.description = "Card payment";
         this.amount = amount;

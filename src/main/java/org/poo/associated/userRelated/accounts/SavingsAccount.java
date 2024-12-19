@@ -1,8 +1,6 @@
 package org.poo.associated.userRelated.accounts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
@@ -15,7 +13,8 @@ public final class SavingsAccount extends Account {
     private double interestRate;
 
     public SavingsAccount(final CommandInput commandInput, final String belongsToEmail) {
-        super(Utils.generateIBAN(), commandInput.getCurrency(), commandInput.getAccountType(), belongsToEmail);
+        super(Utils.generateIBAN(), commandInput.getCurrency(),
+                commandInput.getAccountType(), belongsToEmail);
         this.interestRate = commandInput.getInterestRate();
     }
 }

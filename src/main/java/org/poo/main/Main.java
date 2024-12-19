@@ -7,9 +7,6 @@ import org.poo.associated.bankRelated.BankInitializer;
 import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
 import org.poo.fileio.ObjectInput;
-import org.poo.utils.CustomPrettyPrinter;
-import org.poo.utils.Utils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -74,29 +71,9 @@ public final class Main {
                               final String filePath2) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         File file = new File(CheckerConstants.TESTS_PATH + filePath1);
-        System.out.println("============ " + filePath1);
         ObjectInput inputData = objectMapper.readValue(file, ObjectInput.class);
 
         ArrayNode output = objectMapper.createArrayNode();
-
-        /*
-         * TODO Implement your function here
-         *
-         * How to add output to the output array?
-         * There are multiple ways to do this, here is one example:
-         *
-         * ObjectMapper mapper = new ObjectMapper();
-         *
-         * ObjectNode objectNode = mapper.createObjectNode();
-         * objectNode.put("field_name", "field_value");
-         *
-         * ArrayNode arrayNode = mapper.createArrayNode();
-         * arrayNode.add(objectNode);
-         *
-         * output.add(arrayNode);
-         * output.add(objectNode);
-         *
-         */
 
         BankInitializer.getInstance().initialize(inputData, output);
 

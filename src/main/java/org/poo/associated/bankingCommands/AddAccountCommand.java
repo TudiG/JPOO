@@ -1,14 +1,12 @@
 package org.poo.associated.bankingCommands;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.accounts.accountUtilities.AccountFactory;
-import org.poo.associated.userRelated.transaction.AccountCreatedTransaction;
-import org.poo.associated.userRelated.transaction.Transaction;
+import org.poo.associated.userRelated.transactions.AccountCreatedTransaction;
+import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
 import org.poo.fileio.CommandInput;
 
 import java.util.ArrayList;
@@ -25,10 +23,15 @@ public final class AddAccountCommand implements BankingCommand {
                 .forEach(user -> user.getAccounts().add(account));
 
         Transaction transaction = new AccountCreatedTransaction(commandInput.getTimestamp());
-        List<Transaction> transactions = new ArrayList<>();
-        transactions.add(transaction);
 
-        bank.getUserTransactionsDatabase().put(commandInput.getEmail(), transactions);
+        if (bank.getUserTransactionsDatabase().get(commandInput.getEmail()) == null) {
+            List<Transaction> transactions = new ArrayList<>();
+            transactions.add(transaction);
+            bank.getUserTransactionsDatabase().put(commandInput.getEmail(), transactions);
+        } else {
+            bank.getUserTransactionsDatabase().get(commandInput.getEmail()).add(transaction);
+        }
+
         account.getAccountTransactions().add(transaction);
     }
 }

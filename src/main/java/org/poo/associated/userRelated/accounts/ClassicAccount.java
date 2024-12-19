@@ -6,6 +6,7 @@ import org.poo.utils.Utils;
 
 public final class ClassicAccount extends Account {
     public ClassicAccount(final CommandInput commandInput, final String belongsToEmail) {
-        super(Utils.generateIBAN(), commandInput.getCurrency(), commandInput.getAccountType(), belongsToEmail);
+        super(Utils.generateIBAN(), commandInput.getCurrency(),
+                commandInput.getAccountType(), belongsToEmail);
     }
 }

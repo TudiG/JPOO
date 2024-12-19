@@ -11,7 +11,7 @@ public final class SetMinimumBalanceCommand implements BankingCommand {
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         Account account = Bank.getInstance().findAccountByIBAN(commandInput.getAccount());
 
-        if(account == null) {
+        if (account == null) {
             return;
         }
 

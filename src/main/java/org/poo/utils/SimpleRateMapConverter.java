@@ -5,14 +5,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import lombok.Getter;
 import org.poo.fileio.ExchangeInput;
 
+/**
+ * Aceasta clasa este utilizata doar pentru a obtine rate de exchange intermediare.
+ */
 public final class SimpleRateMapConverter {
-    public static final Map<String, Double> ratesMap = new HashMap<>();
+    @Getter
+    private static Map<String, Double> ratesMap = new HashMap<>();
 
+    private SimpleRateMapConverter() { }
+
+    /**
+     *
+     * @param exchangeInputs exchangeRate-urile de la input
+     */
     public static void precomputeRates(final List<ExchangeInput> exchangeInputs) {
         Set<String> currencies = new HashSet<>();
-        
+
         for (ExchangeInput input : exchangeInputs) {
             String fromToKey = input.getFrom() + "-" + input.getTo();
             String toFromKey = input.getTo() + "-" + input.getFrom();
@@ -29,16 +41,17 @@ public final class SimpleRateMapConverter {
                     ratesMap.putIfAbsent(from + "-" + to, 1.0);
                     continue;
                 }
-        
+
                 for (String intermediate : currencies) {
                     String fromToKey = from + "-" + to;
                     String fromIntermediateKey = from + "-" + intermediate;
                     String intermediateToKey = intermediate + "-" + to;
-        
-                    if (!ratesMap.containsKey(fromToKey) 
-                        && ratesMap.containsKey(fromIntermediateKey) 
+
+                    if (!ratesMap.containsKey(fromToKey)
+                        && ratesMap.containsKey(fromIntermediateKey)
                         && ratesMap.containsKey(intermediateToKey)) {
-                            double rate = ratesMap.get(fromIntermediateKey) * ratesMap.get(intermediateToKey);
+                            double rate = ratesMap.get(fromIntermediateKey)
+                                    * ratesMap.get(intermediateToKey);
                             ratesMap.put(fromToKey, rate);
                             break;
                     }

@@ -1,8 +1,9 @@
-package org.poo.associated.userRelated.transaction;
+package org.poo.associated.userRelated.transactions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
 
-public class NewCardTransaction extends Transaction {
+public final class NewCardTransaction extends Transaction {
     @JsonProperty("description")
     private String description;
     @JsonProperty("card")
@@ -12,7 +13,10 @@ public class NewCardTransaction extends Transaction {
     @JsonProperty("account")
     private String account;
 
-    public NewCardTransaction(Integer timestamp, String card, String cardHolder, String account) {
+    public NewCardTransaction(final Integer timestamp,
+                              final String card,
+                              final String cardHolder,
+                              final String account) {
         super(timestamp);
         this.description = "New card created";
         this.card = card;

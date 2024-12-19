@@ -7,9 +7,8 @@ import org.poo.associated.bankRelated.Bank;
 import org.poo.associated.bankingCommands.commandInterface.BankingCommand;
 import org.poo.associated.userRelated.accounts.accountUtilities.Account;
 import org.poo.associated.userRelated.card.Card;
-import org.poo.associated.userRelated.transaction.CardFrozenError;
-import org.poo.associated.userRelated.transaction.MinimumBalanceWarning;
-import org.poo.associated.userRelated.transaction.Transaction;
+import org.poo.associated.userRelated.transactions.MinimumBalanceWarning;
+import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
 import org.poo.associated.userRelated.user.User;
 import org.poo.fileio.CommandInput;
 
@@ -19,7 +18,7 @@ public final class CheckCardStatusCommand implements BankingCommand {
     @Override
     public void execute(final CommandInput commandInput, final ArrayNode output) {
         Bank bank = Bank.getInstance();
-        Card card = Bank.getInstance().findCardByNumber(commandInput.getCardNumber());
+        Card card = bank.findCardByNumber(commandInput.getCardNumber());
 
         if (card == null) {
             ObjectMapper mapper = new ObjectMapper();
@@ -42,7 +41,8 @@ public final class CheckCardStatusCommand implements BankingCommand {
 
         User user = bank.findUserByCardNumber(commandInput.getCardNumber());
 
-        List<Transaction> transactionArray = bank.getUserTransactionsDatabase().get(user.getEmail());
+        List<Transaction> transactionArray = bank.getUserTransactionsDatabase()
+                .get(user.getEmail());
 
         if (account.getMinimumBalance() >= account.getBalance()) {
             card.setStatus("frozen");

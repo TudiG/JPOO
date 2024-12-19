@@ -10,7 +10,7 @@ public final class AddFundsCommand implements BankingCommand {
     public void execute(final CommandInput commandInput,  final ArrayNode output) {
         Bank.getInstance().getUsers().stream()
                 .flatMap(user -> user.getAccounts().stream())
-                .filter(account -> commandInput.getAccount().equals(account.getIBAN()))
+                .filter(account -> commandInput.getAccount().equals(account.getIban()))
                 .findFirst().stream()
                 .findAny()
                 .ifPresent(selectedAccount -> selectedAccount.addFunds(commandInput.getAmount()));

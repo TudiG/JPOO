@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.poo.associated.userRelated.card.Card;
 import org.poo.associated.userRelated.commerciantReport.CommerciantReport;
-import org.poo.associated.userRelated.transaction.Transaction;
+import org.poo.associated.userRelated.transactions.transactionUtilities.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,36 +16,47 @@ import java.util.List;
 @JsonPropertyOrder({ "IBAN", "balance", "currency", "type", "cards" })
 public abstract class Account {
     @JsonProperty("IBAN")
-    protected String IBAN;
+    protected String iban;
     protected double balance = 0;
     protected String currency;
     protected String type;
-    protected List<Card> cards = new ArrayList<>();
-
+    protected List<Card> cards;
     @JsonIgnore
     protected double minimumBalance = 0;
     @JsonIgnore
     protected String belongsToEmail;
-
-    // Se vor folosi pentru spending report. aia e. se vor dubla listele de tranzactii.
     @JsonIgnore
-    protected List<Transaction> accountTransactions = new ArrayList<>();
+    protected List<Transaction> accountTransactions;
     @JsonIgnore
-    protected List<CommerciantReport> commerciantInteractions = new ArrayList<>();
+    protected List<CommerciantReport> commerciantInteractions;
 
-    public Account(final String IBAN, final String currency, final String accountType, final String belongsToEmail) {
-        this.IBAN = IBAN;
+    public Account(final String iban,
+                   final String currency,
+                   final String accountType,
+                   final String belongsToEmail) {
+        this.iban = iban;
         this.currency = currency;
         this.type = accountType;
         this.belongsToEmail = belongsToEmail;
+        cards = new ArrayList<>();
+        accountTransactions = new ArrayList<>();
+        commerciantInteractions = new ArrayList<>();
     }
 
-    public void addFunds(final double amount) {
+    /**
+     *
+     * @param amount
+     */
+    public final void addFunds(final double amount) {
         balance += amount;
     }
 
-    public void subtractFunds(final double amount) {
-        if(amount <= this.balance) {
+    /**
+     *
+     * @param amount
+     */
+    public final void subtractFunds(final double amount) {
+        if (amount <= this.balance) {
             balance -= amount;
         }
     }

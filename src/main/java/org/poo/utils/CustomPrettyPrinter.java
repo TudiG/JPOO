@@ -7,7 +7,7 @@ import java.io.IOException;
 
 /**
  * Aceasta clasa doar asigura o indentare asemanatoare cu cea din fisierele ref
- * pentru a permite compararea usoara intre output si referinta.
+ * pentru a permite compararea usoara intre output si referinta la prima vedere.
  */
 public final class CustomPrettyPrinter extends DefaultPrettyPrinter {
     public CustomPrettyPrinter() {
