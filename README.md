@@ -90,5 +90,3 @@ codului din clasele de tip BankingCommand.
 
 #### (Aproape) Command Design Pattern:
 1. java/org.poo/associated/bankingCommands/*
-
-<div align="center"><img src="https://media1.tenor.com/m/aNAxmoSej-MAAAAd/dead-yukari.gif" width="600px"></div>
